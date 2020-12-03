@@ -99,10 +99,12 @@ if( isset( $_GET['error'] ) ) {
     CREATE DATABASE IF NOT EXISTS $database;
     USE $database;
     
-    DROP TABLE IF EXISTS `post` ;
-    DROP TABLE IF EXISTS `category` ;
-    DROP TABLE IF EXISTS `language` ;
-    
+    DROP TABLE IF EXISTS `post`;
+    DROP TABLE IF EXISTS `category`;
+    DROP TABLE IF EXISTS `translates`;
+    DROP TABLE IF EXISTS `users`;
+    DROP TABLE IF EXISTS `language`;
+
     CREATE TABLE IF NOT EXISTS `language` (
       `lang_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
       `lang_name` VARCHAR(32) NOT NULL,
@@ -115,15 +117,17 @@ if( isset( $_GET['error'] ) ) {
       `cat_main_lang_ref` INT NOT NULL,
       `cat_url` TEXT NOT NULL,
       `cat_lang_id` INT NOT NULL,
+      `cat_lang_ref` INT NOT NULL,
       `cat_meta_title` VARCHAR(128) NOT NULL,
       `cat_meta_description` VARCHAR(256) NOT NULL,
-      FOREIGN KEY (cat_lang_id) REFERENCES `language`(lang_id)  )
+      FOREIGN KEY (cat_lang_id) REFERENCES `language`(lang_id),
+      FOREIGN KEY (cat_lang_ref) REFERENCES `category`(category_id)  )
     ENGINE = InnoDB;
     
     CREATE TABLE IF NOT EXISTS `post` (
       `post_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
       `post_name` TEXT NOT NULL,
-      `post_content` MEDIUMTEXT NULL,
+      `post_content` MEDIUMTEXT NOT NULL,
       `post_category_id` INT NOT NULL,
       `post_lang_id` INT NOT NULL,
       `post_lang_ref` INT NOT NULL,
@@ -132,14 +136,43 @@ if( isset( $_GET['error'] ) ) {
       `post_meta_description` VARCHAR(256) NOT NULL,
       `post_status` INT NOT NULL,
       FOREIGN KEY (post_category_id) REFERENCES `category`(category_id),
-      FOREIGN KEY (post_lang_id) REFERENCES `language`(lang_id)  )
+      FOREIGN KEY (post_lang_id) REFERENCES `language`(lang_id),
+      FOREIGN KEY (post_lang_ref) REFERENCES `post`(post_id)  )
+    ENGINE = InnoDB;
+
+    CREATE TABLE IF NOT EXISTS `users` (
+        `user_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        `user_email` TEXT NOT NULL,
+        `user_pwd` MEDIUMTEXT NULL )
+    ENGINE = InnoDB;
+
+    CREATE TABLE IF NOT EXISTS `translates` (
+        `translate_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        `translate_value` MEDIUMTEXT NOT NULL,
+        `translate_lang_id` INT NOT NULL,
+        `translate_lang_ref` INT NOT NULL,
+        FOREIGN KEY (translate_lang_id) REFERENCES `language`(lang_id),
+        FOREIGN KEY (translate_lang_ref) REFERENCES `translates`(translate_id) )
     ENGINE = InnoDB;
 EOD;
 
     $conn = DBUtils::createConnection( false );
     $conn->multi_query( $sql_text );
-    
 
+    do {
+        if( $result = $conn->store_result() ) {
+            $result->free_result();
+        }
+    } while( $conn->next_result() );
+
+
+    $hashed_pwd = password_hash( $_GET['pwd'], PASSWORD_DEFAULT );
+
+    $sql_text = "INSERT INTO users (user_email, user_pwd) VALUES (\"".$_GET['email']."\",\"$hashed_pwd\")";
+    $conn->query( $sql_text );
+    
+    echo $conn->error;
+    
 }
 
 ?>
