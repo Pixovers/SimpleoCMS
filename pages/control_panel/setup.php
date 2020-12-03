@@ -1,8 +1,9 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/control_panel/login_utils.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/db_utils.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/str_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/control_panel/login_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/db_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/str_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/lang_utils.php";
 
 
 if( isset( $_GET['error'] ) ) {
@@ -104,6 +105,7 @@ if( isset( $_GET['error'] ) ) {
     DROP TABLE IF EXISTS `translates`;
     DROP TABLE IF EXISTS `users`;
     DROP TABLE IF EXISTS `language`;
+    DROP TABLE IF EXISTS `config`;
 
     CREATE TABLE IF NOT EXISTS `language` (
       `lang_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -154,6 +156,12 @@ if( isset( $_GET['error'] ) ) {
         FOREIGN KEY (translate_lang_id) REFERENCES `language`(lang_id),
         FOREIGN KEY (translate_lang_ref) REFERENCES `translates`(translate_id) )
     ENGINE = InnoDB;
+
+    CREATE TABLE IF NOT EXISTS `config` (
+        `config_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        `config_key` VARCHAR(256) NOT NULL,
+        `config_value` VARCHAR(256) )
+    ENGINE = InnoDB;
 EOD;
 
     $conn = DBUtils::createConnection( false );
@@ -165,6 +173,17 @@ EOD;
         }
     } while( $conn->next_result() );
 
+    $sql_text = "INSERT INTO language (lang_name, lang_code) VALUES (\"".$_GET['lang_name']."\",\"".$_GET['lang_code']."\")";
+    $conn->query( $sql_text );
+
+    $sql_text = "INSERT INTO config (config_key, config_value) VALUES ('MAIN_LANGUAGE',\"".$_GET['lang_code']."\")";
+    $conn->query( $sql_text );
+
+    $sql_text = "INSERT INTO config (config_key, config_value) VALUES ('SITENAME',\"".$_GET['sitename']."\")";
+    $conn->query( $sql_text );
+
+
+
 
     $hashed_pwd = password_hash( $_GET['pwd'], PASSWORD_DEFAULT );
 
@@ -172,6 +191,8 @@ EOD;
     $conn->query( $sql_text );
     
     echo $conn->error;
+
+    echo var_dump(LangUtils::getCurrentLanguage( $conn ));
     
 }
 
