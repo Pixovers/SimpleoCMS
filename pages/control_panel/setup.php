@@ -4,6 +4,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/control_panel/login_util
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/db_utils.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/str_utils.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/lang_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/language.php";
 
 
 if( isset( $_GET['error'] ) ) {
@@ -192,7 +193,7 @@ EOD;
     
     echo $conn->error;
 
-    echo var_dump(LangUtils::getCurrentLanguage( $conn ));
+    echo var_dump(Language::byCode($conn,"ir"));
     
 }
 
