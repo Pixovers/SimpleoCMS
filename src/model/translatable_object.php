@@ -10,28 +10,27 @@ class TranslatableObject {
 
     //Language object
     private $lang;
+    private $id;
+    private $default_lang_ref_id;
 
     /*
      *  Method:             TranslatableObject::__construct()
      *  Description:        Constructor
      */
-    public function __construct( $lang )
+    public function __construct( $lang, $id, $default_lang_ref_id )
     {
         $this->lang = $lang;
-    }
-
-    /*
-     *  Method:             TranslatableObject::__construct()
-     *  Description:        Constructor
-     */
-    public static function fetchByLang( $conn, $lang ) {
-
+        $this->id = $id;
+        $this->default_lang_ref_id = $default_lang_ref_id;
     }
 
     /*
      *      Void methods used in inherited classes, to select objects
      *      by lang, default lang, and so on.
      */
+    public static function fetchByLang( $conn, $lang ) {
+
+    }
 
     public function fetchByDefaultLang( $conn ) {
 
@@ -59,5 +58,19 @@ class TranslatableObject {
         $this->lang = $lang;
     }
 
+    public function getId() {
+        return $this->id;
+    }
 
+    public function setId( $id ) {
+        $this->id = $id;
+    }
+
+    public function getDefaultLangRefId() {
+        return $this->default_lang_ref_id;
+    }
+
+    public function setDefaultLangRefId( $default_lang_ref_id ) {
+        $this->default_lang_ref_id = $default_lang_ref_id;
+    }
 }

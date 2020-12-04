@@ -117,7 +117,6 @@ if( isset( $_GET['error'] ) ) {
     CREATE TABLE IF NOT EXISTS `category` (
       `category_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
       `cat_name` TEXT NOT NULL,
-      `cat_main_lang_ref` INT NOT NULL,
       `cat_url` TEXT NOT NULL,
       `cat_lang_id` INT NOT NULL,
       `cat_lang_ref` INT NOT NULL,

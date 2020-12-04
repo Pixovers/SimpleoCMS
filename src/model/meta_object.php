@@ -20,9 +20,9 @@ class MetaObject extends TranslatableObject {
      *  Description:        Create object by providing a $language (Language), and two strings:
      *                      $meta_title and $meta_description 
      */
-    public function __construct( $language, $meta_title, $meta_description )
+    public function __construct( $language,  $id, $default_lang_ref_id, $meta_title, $meta_description )
     {
-        parent::__construct( $language );
+        parent::__construct( $language, $id, $default_lang_ref_id );
 
         $this->meta_description = $meta_description;
         $this->meta_title = $meta_title;
