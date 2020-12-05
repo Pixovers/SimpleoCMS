@@ -88,20 +88,41 @@ class Category extends MetaObject {
         return $categories;       
     }
 
-    public static function addNew(  $name, 
+    public static function addNew(  $conn,
+                                    $name, 
                                     $url,
                                     $lang,
                                     $default_lang_ref_id,
                                     $meta_title,
                                     $meta_description ) 
     {
-    $sql_text = "INSERT INTO category (cat_name,cat_url,cat_lang_id,cat_lang_ref,cat_meta_title,cat_meta_description) " . 
-                "VALUES (\"$name\",\"$url\",".$lang->getLangId().",$default_lang_ref_id,\"$meta_title\",\"$meta_description\")";
+    $langId = $lang->getLangId();
 
-                /*
-                INSERT INTO language (lang_name,lang_code) VALUES ("ciaod","i");
+        if( is_null( $default_lang_ref_id ) ) {
+            $sql_text = <<<EOD
+INSERT INTO category (cat_name,cat_url,cat_lang_id,cat_lang_ref,cat_meta_title,cat_meta_description)
+VALUES ("$name","$url",$langId,NULL,"$meta_title","$meta_description");
 SELECT LAST_INSERT_ID();
-*/
+EOD;
+            $conn->multi_query($sql_text);
+
+            //fisrt query result
+            $conn->store_result();
+
+            //second query result: id of last record
+            $conn->next_result();
+            $id = $conn->store_result()->fetch_assoc()['LAST_INSERT_ID()'];
+            $conn->query("UPDATE category set cat_lang_ref=$id WHERE category_id=$id");
+        } else {
+            $sql_text = <<<EOD
+INSERT INTO category (cat_name,cat_url,cat_lang_id,cat_lang_ref,cat_meta_title,cat_meta_description)
+VALUES ("$name","$url",$langId,$default_lang_ref_id,"$meta_title","$meta_description");
+EOD;
+            if( $conn->query($sql_text) == false ) {
+                return false;
+            }
+        }   
+                
     }
 
     public static function fetchAllByDefaultLang( $conn ) {

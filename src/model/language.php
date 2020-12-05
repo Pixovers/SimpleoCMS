@@ -52,7 +52,7 @@ class Language {
     public function loadByData( $lang_id, $lang_name, $lang_code ) {
         $this->lang_id = $lang_id;
         $this->lang_name = $lang_name;
-        $this->lang_code = $lang_code;
+        $this->lang_code = $lang_code; 
     }
 
     /*

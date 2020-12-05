@@ -28,7 +28,7 @@ class TranslatableObject {
      *      Void methods used in inherited classes, to select objects
      *      by lang, default lang, and so on.
      */
-    public static function fetchByLang( $conn, $lang ) {
+    public function fetchByLang( $conn, $lang ) {
 
     }
 

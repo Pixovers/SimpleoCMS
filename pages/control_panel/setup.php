@@ -5,6 +5,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/db_utils.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/str_utils.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/lang_utils.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/language.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/category.php";
 
 
 if( isset( $_GET['error'] ) ) {
@@ -119,7 +120,7 @@ if( isset( $_GET['error'] ) ) {
       `cat_name` TEXT NOT NULL,
       `cat_url` TEXT NOT NULL,
       `cat_lang_id` INT NOT NULL,
-      `cat_lang_ref` INT NOT NULL,
+      `cat_lang_ref` INT DEFAULT NULL,
       `cat_meta_title` VARCHAR(128) NOT NULL,
       `cat_meta_description` VARCHAR(256) NOT NULL,
       FOREIGN KEY (cat_lang_id) REFERENCES `language`(lang_id),
@@ -183,17 +184,11 @@ EOD;
     $conn->query( $sql_text );
 
 
-
-
     $hashed_pwd = password_hash( $_GET['pwd'], PASSWORD_DEFAULT );
 
     $sql_text = "INSERT INTO users (user_email, user_pwd) VALUES (\"".$_GET['email']."\",\"$hashed_pwd\")";
     $conn->query( $sql_text );
-    
-    echo $conn->error;
-
-    echo var_dump(Language::byCode($conn,"ir"));
-    
+        
 }
 
 ?>
