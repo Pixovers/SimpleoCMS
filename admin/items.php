@@ -3,6 +3,7 @@
 
 <head>
     <?php include_once "templates/head.php"; ?>
+
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.css">
     <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
 
@@ -21,14 +22,14 @@
 
             <div class="container-fluid">
 
-<div class="row">
-<div class="col-3 py-2">
-<button type="button py-2" class="btn btn-success">Add new Items</button>
-<button type="button py-2" class="btn btn-danger">Remove Items</button>
+                <div class="row">
+                    <div class="col-3 py-2">
+                        <button type="button py-2" class="btn btn-success">Add new Items</button>
+                        <button type="button py-2" class="btn btn-danger">Remove Items</button>
 
-</div>
+                    </div>
 
-</div>
+                </div>
                 <div class="row">
                     <div class="col-12 py-2">
 
@@ -36,13 +37,10 @@
                             <div class="card-header">Header</div>
                             <div class="card-body">
 
-
-
-
-                                <table id="table" data-toggle="bootstrap-table" data-search="true" data-url="json/data1.json" class="table table-bordered table-hover">
-                                    <thead>
+                                <table id="table" data-toggle="bootstrap-table" data-search="true" data-url="json/data1.json" class="table table-dark table-bordered table-hover">
+                                    <thead class="thead-dark">
                                         <tr>
-                                            <th style="" data-field="id">
+                                            <th data-field="id">
                                                 <div class="th-inner ">ID</div>
                                                 <div class="fht-cell"></div>
                                             </th>
@@ -91,19 +89,11 @@
 
                                     </tbody>
                                 </table>
-
                             </div>
-
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
-
-
-
         </div>
     </div>
     <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
