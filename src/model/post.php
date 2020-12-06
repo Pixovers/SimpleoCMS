@@ -127,8 +127,8 @@ EOD;
             $conn->query("UPDATE post set post_lang_ref=$id WHERE post_id=$id");
         } else {
             $sql_text = <<<EOD
-INSERT INTO category (cat_name,cat_url,cat_lang_id,cat_lang_ref,cat_meta_title,cat_meta_description)
-VALUES ("$name","$url",$langId,$default_lang_ref_id,"$meta_title","$meta_description");
+INSERT INTO post (post_name,post_content,post_status,post_url,post_lang_id,post_lang_ref,post_meta_title,post_meta_description)
+VALUES ("$name","$content","$status","$url",$langId,$default_lang_ref_id,"$meta_title","$meta_description");
 EOD;
             if( $conn->query($sql_text) == false ) {
                 return false;
