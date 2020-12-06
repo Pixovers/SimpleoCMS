@@ -2,6 +2,11 @@
 
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/meta_object.php";
 
+
+/*
+ *  Class:              Category
+ *  Description:        Class used to create, delete and manage Categories
+ */
 class Category extends MetaObject {
 
     private $name;

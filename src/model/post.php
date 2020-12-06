@@ -2,6 +2,10 @@
 
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/meta_object.php";
 
+/*
+ *  Class:              Post
+ *  Description:        Class used to create, delete and manage Posts
+ */
 class Post extends MetaObject {
 
     private $name;

@@ -2,6 +2,11 @@
 
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/translatable_object.php";
 
+
+/*
+ *  Class:              Translate
+ *  Description:        Class used to create, delete and manage Translates
+ */
 class Translate extends TranslatableObject {
 
     private $value;
