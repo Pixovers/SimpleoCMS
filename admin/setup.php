@@ -48,6 +48,7 @@ if (isset($_GET['error'])) {
         empty($_GET['lang_name']) ||
         empty($_GET['lang_code']) ||
         empty($_GET['db_host']) ||
+        empty($_GET['db_database']) ||
         empty($_GET['db_username'])
     ) {
         header("location: ./setup.php?error=empty&" . http_build_query($_GET));
@@ -85,16 +86,15 @@ if (isset($_GET['error'])) {
     }
 
 
-    if (!DBUtils::CheckConnection($_GET['db_host'], $_GET['db_username'], $_GET['db_password'])) {
+    if (!DBUtils::CheckConnection($_GET['db_host'], $_GET['db_username'], $_GET['db_password'], $_GET['db_database'])) {
         header("location: ./setup.php?error=db_conn&" . http_build_query($_GET));
         exit();
     }
 
-    //--- No errors ---
-
+    //--- No errors     ---
     //--- creating site ---
 
-    $database = StringUtils::sanitize($_GET['sitename']);
+    $database = $_GET['db_database'];
 
     //saving mysql credentials
     DBUtils::saveCredentials($_GET['db_host'], $_GET['db_username'], $_GET['db_password'], $database);
@@ -284,6 +284,12 @@ EOD;
                                     <div class="form-group row justify-content-center">
                                         <div class="col-sm-2"><label for="db_username_input">Username</label></div>
                                         <div class="col-sm-6"><input class="form-control" type="text" id="db_username_input" name="db_username" placeholder="Username" value="<?php if (isset($_GET['db_username'])) echo $_GET['db_username']; ?>">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row justify-content-center">
+                                        <div class="col-sm-2"><label for="db_database_input">Database</label></div>
+                                        <div class="col-sm-6"><input class="form-control" type="text" id="db_database_input" name="db_database" placeholder="Database" value="<?php if (isset($_GET['db_database'])) echo $_GET['db_database']; ?>">
                                         </div>
                                     </div>
 

@@ -10,8 +10,11 @@ switch( $uri ) {
     case "/admin":
         include_once "../admin/login.php";
         exit();
-        
 
+    case "/admin/items":
+        include_once "../admin/items.php";
+        exit();
+    
 }
 
 if( file_exists( $_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json") ) {

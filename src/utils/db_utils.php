@@ -1,8 +1,8 @@
 <?php
 
 class DBUtils {
-    public static function CheckConnection( $host, $username, $pwd ) {
-        $conn = new mysqli( $host, $username, $pwd );
+    public static function CheckConnection( $host, $username, $pwd, $database ) {
+        $conn = new mysqli( $host, $username, $pwd, $database );
 
         if( $conn->connect_errno ) {
             return false;
