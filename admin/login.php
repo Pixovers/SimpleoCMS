@@ -1,3 +1,23 @@
+<?php
+
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/control_panel/login_utils.php";
+
+if (isset($_POST['error'])) {
+
+} else if( isset( $_POST['submit'] ) ) {
+
+  if( 
+      empty($_POST['email']) ||
+      empty($_POST['pwd'])
+  ) {
+    header("location: ./login.php?error=empty");
+  }
+  //header("location: ./login.php?error=empty");
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,24 +37,24 @@
           <div class="row">
             <div class="col-md-9 col-lg-8 mx-auto">
               <h3 class="login-heading mb-4">Welcome back!</h3>
-              <form>
+              <form method="POST">
                 <div class="form-label-group">
-                  <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+                  <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="email" required autofocus>
                   <label for="inputEmail">Email address</label>
                 </div>
 
                 <div class="form-label-group">
-                  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                  <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="pwd" required>
                   <label for="inputPassword">Password</label>
                 </div>
 
-                <div class="custom-control custom-checkbox mb-3">
+                <!--div class="custom-control custom-checkbox mb-3">
                   <input type="checkbox" class="custom-control-input" id="customCheck1">
                   <label class="custom-control-label" for="customCheck1">Remember password</label>
-                </div>
-                <button class="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign in</button>
-                <div class="text-center">
-                  <a class="small" href="#">Forgot password?</a></div>
+                </div-->
+                <button class="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2" name="submit" type="submit">Sign in</button>
+                <!--div class="text-center">
+                  <a class="small" href="#">Forgot password?</a></div-->
               </form>
             </div>
           </div>
