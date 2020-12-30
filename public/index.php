@@ -1,11 +1,6 @@
-<?php 
+<?php
 session_start();
 
-if( isset( $_SESSION["user_email"] ) ) {
-    echo "Utente loggato";
-} else {
-    echo "Utente non loggato";
-}
 
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/lang_utils.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/db_utils.php";
@@ -16,14 +11,14 @@ error_reporting(E_ALL);
 
 
 $_URI = parse_url($_SERVER['REQUEST_URI']);
-echo var_dump( $_URI );
+//echo var_dump( $_URI );
 
-if( !file_exists( $_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json") ) {
+if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) {
     include_once "../admin/setup.php";
 } else {
     $_CONN = DBUtils::createConnection();
-    list($lang_id, $uri) = LangUtils::getCurrentLanguage( $_URI['path'], DBUtils::createConnection() );
-    switch( $uri ) {
+    list($lang_id, $uri) = LangUtils::getCurrentLanguage($_URI['path'], DBUtils::createConnection());
+    switch ($uri) {
         case "/":
             include_once "../pages/home/home.php";
             exit();
@@ -36,9 +31,9 @@ if( !file_exists( $_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json") 
         case "/admin/items":
             include_once "../admin/items.php";
             exit();
-        
+
+        case "/admin/new_post":
+            include_once "../admin/new_post.php";
+            exit();
     }
-
-    
-
-}  
+}
