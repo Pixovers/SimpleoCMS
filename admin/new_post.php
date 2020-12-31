@@ -1,3 +1,52 @@
+<?php
+
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/category.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/post.php";
+
+echo var_dump($_POST);
+if (isset($_GET['lang'])) {
+    $language = Language::byCode($_CONN, $_GET['lang']);
+} else {
+    $language = Language::getDefaultLanguage($_CONN);
+}
+
+if (isset($_POST['title'])) {
+
+    if (isset($_POST['content'])) {
+        $content = $_POST['content'];
+    } else {
+        $content = "";
+    }
+
+    if (isset($_POST['meta_title'])) {
+        $meta_title = $_POST['meta_title'];
+    } else {
+        $meta_title = "";
+    }
+
+    if (isset($_POST['meta_description'])) {
+        $meta_description = $_POST['meta_description'];
+    } else {
+        $meta_description = "";
+    }
+
+
+    Post::addNew(
+        $_CONN,
+        $_POST['title'],
+        "url",
+        $content,
+        $_POST['cat_id'],
+        1,
+        $language,
+        NULL,
+        $meta_title,
+        $meta_description
+    );
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -288,7 +337,12 @@
                                             <label for="metaTitleInput">Meta Title</label>
                                             <input type="text" class="form-control" id="metaTitleInput">
                                         </div>
-                        
+
+                                        <div class="form-group">
+                                            <label for="SlugInput">URL slug</label>
+                                            <input type="text" class="form-control" id="SlugInput" name="SlugInput">
+                                        </div>
+
                                         <div class="form-group">
                                             <label for="metaDescriptionInput">Meta description</label>
                                             <textarea class="form-control" id="metaDescriptionInput" rows="3"></textarea>
@@ -316,101 +370,58 @@
 
                                     <div class="card shadow-sm mt-2 mb-2">
                                         <div class="card-body">
-                                            <h5 class="card-title">languages</h5>
+                                            <h5 class="card-title">Language:</h5>
                                             <div class="form-group">
-                                                <select class="form-control" id="exampleFormControlSelect1">
-                                                    <option>inglese</option>
-                                                    <option>italiano</option>
-                                                    <option>francese</option>
-                                                </select>
+                                                <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $language->getLangName(); ?>" readonly>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="card shadow-sm mt-2 mb-2">
                                         <div class="card-body">
-                                            <h5 class="card-title">Pubblica</h5>
-                                            <button type="button" class="btn btn-primary">Pubblica</button>
-                                            <button type="button" class="btn btn-secondary">Salva</button>
+                                            <h5 class="card-title">Publish Post</h5>
+                                            <button type="button" class="btn btn-primary" onclick="createPost();">Publish</button>
+                                            <!--button type="button" class="btn btn-secondary">Salva</button-->
                                         </div>
                                     </div>
 
                                     <div class="card shadow-sm mt-2 mb-2">
                                         <div class="card-body">
-                                            <h5 class="card-title">Categorie</h5>
+                                            <h5 class="card-title">Category</h5>
+                                            <?php
+                                            $categories = Category::fetchAllByLang($_CONN, $language);
 
-                                            <div class="form-check">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="">
-                                                <label class="form-check-label" for="inlineRadio1">boa</label>
-                                            </div>
+                                            foreach ($categories as $cat) {
+                                            ?>
+                                                <div class="form-check">
+                                                    <input class="form-check-input position-static" name="category" type="radio" checked id="cat_<?php echo $cat->getId(); ?>" value="<?php echo $cat->getId(); ?>" aria-label="">
+                                                    <label class="form-check-label"><?php echo $cat->getName(); ?></label>
+                                                </div>
 
-                                            <div class="form-check">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="">
-                                                <label class="form-check-label" for="inlineRadio1">vimbing</label>
-                                            </div>
-
-                                            <div class="form-check">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="">
-                                                <label class="form-check-label" for="inlineRadio1">cvp</label>
-                                            </div>
-
-                                            <div class="form-check">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="">
-                                                <label class="form-check-label" for="inlineRadio1">tim</label>
-                                            </div>
+                                            <?php } ?>
 
                                         </div>
                                     </div>
 
 
 
-                                    <div class="card shadow-sm mt-2 mb-2">
+                                    <!--div class="card shadow-sm mt-2 mb-2">
                                         <div class="card-body">
-                                            <h5 class="card-title">tag</h5>
-
-                                            <div class="form-check">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="">
-                                                <label class="form-check-label" for="inlineRadio1">900</label>
-                                            </div>
-
-                                            <div class="form-check">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="">
-                                                <label class="form-check-label" for="inlineRadio1">pppppppp</label>
-                                            </div>
-
-                                            <div class="form-check">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="">
-                                                <label class="form-check-label" for="inlineRadio1">bic</label>
-                                            </div>
-
-                                            <div class="form-check">
-                                                <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="">
-                                                <label class="form-check-label" for="inlineRadio1">fulmini in casa</label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="card shadow-sm mt-2 mb-2">
-                                        <div class="card-body">
-                                            <h5 class="card-title">images</h5>
+                                            <h5 class="card-title">Thumbnail Image</h5>
                                             <div class="form-group">
                                                 <label>Upload Image</label>
-                                                <div class="input-group">
+                                                <div class="input-group container-fluid">
+                                                    
                                                     <span class="input-group-btn">
                                                         <span class="btn btn-default btn-file">
-                                                            Browse… <input type="file" id="imgInp">
+                                                            <input type="file" id="imgInp">
                                                         </span>
                                                     </span>
                                                 </div>
-                                                <img width="400" height="100" id='img-upload' />
+                                                <img width="200" height="100" id='img-upload' />
                                             </div>
                                         </div>
-                                    </div>
-
-
-
-
-
+                                    </div-->
 
                                 </div>
                             </div>
@@ -428,6 +439,24 @@
 
 
 
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_error" tabindex="-1" aria-labelledby="link" aria-hidden="true" disabled>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Error</h5>
+
+                </div>
+                <div class="modal-body">
+
+                    <p id="error_msg" class="h6"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -741,12 +770,7 @@
         }
     </script>
 
-    <script>
-        //tooltips
-        $(function() {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
+
 
     <script type='text/javascript'>
         $(document).ready(function() {
@@ -755,7 +779,7 @@
         });
     </script>
 
-    <script>
+    <script>/*
         $(document).ready(function() {
             $(document).on('change', '.btn-file :file', function() {
                 var input = $(this),
@@ -790,6 +814,78 @@
 
             $("#imgInp").change(function() {
                 readURL(this);
+            });
+        });*/
+    </script>
+
+    <script>
+        function encodeSlug($str) {
+            const regex = /\[|\]|\(|\)|\{|\}|\.|:|,|;|\!|\"|\£|\$|\%|\&|\=|\?|\^|\_|\\|\/|\s/gi;
+            let out = "";
+
+            out = $str.replaceAll(regex, '-');
+            out = out.toLowerCase();
+            return out;
+        }
+
+        class Post {
+            constructor(title, content, cat_id, meta_title, meta_description) {
+                this.title = title;
+                this.content = content;
+                this.cat_id = cat_id;
+                this.meta_title = meta_title;
+                this.meta_description = meta_description;
+            }
+        }
+
+
+
+        const title_input = document.getElementById('post_name_input');
+        const slug_input = document.getElementById('SlugInput');
+
+        title_input.addEventListener('change', (event) => {
+            if (document.getElementById("SlugInput").value == "")
+                document.getElementById("SlugInput").value = encodeSlug(document.getElementById('post_name_input').value);
+        });
+
+        slug_input.addEventListener('change', (event) => {
+            slug_input.value = encodeSlug(SlugInput.value);
+        });
+
+        function createPost() {
+            if (document.getElementById('post_name_input').value == "") {
+                document.getElementById('error_msg').innerHTML = "Please enter a valid Post Title.";
+                $('#modal_error').modal('show');
+            } else {
+
+                var cat_radios = document.getElementsByName('category');
+                var cat_id;
+                for (var i = 0, length = cat_radios.length; i < length; i++) {
+                    if (cat_radios[i].checked) {
+                        cat_id = cat_radios[i].value;
+                        break;
+                    }
+                }
+
+                var post = new Post(
+                    document.getElementById('post_name_input').value,
+                    document.getElementById('editor').innerHTML,
+                    cat_id,
+                    document.getElementById('metaTitleInput').value,
+                    document.getElementById('metaDescriptionInput').value
+                )
+
+                $.redirect('', post);
+            }
+
+        }
+    </script>
+
+<script>
+        //tooltips
+        $(document).ready(function() {
+            $("body").tooltip({
+                selector: '[data-toggle=tooltip]'
             });
         });
     </script>

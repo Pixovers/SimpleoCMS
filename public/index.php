@@ -11,7 +11,7 @@ error_reporting(E_ALL);
 
 
 $_URI = parse_url($_SERVER['REQUEST_URI']);
-//echo var_dump( $_URI );
+echo var_dump($_URI);
 
 if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) {
     include_once "../admin/setup.php";
@@ -34,6 +34,14 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
 
         case "/admin/new_post":
             include_once "../admin/new_post.php";
+            exit();
+
+        case "/admin/new-category":
+            include_once "../admin/new-category.php";
+            exit();
+
+        case "/admin/new-language":
+            include_once "../admin/new-language.php";
             exit();
     }
 }
