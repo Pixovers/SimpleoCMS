@@ -40,9 +40,8 @@ class Post extends MetaObject
         $stmt = $conn->prepare("SELECT * FROM post p INNER JOIN language l ON l.lang_id = p.post_lang_id WHERE post_id = ?");
         $stmt->bind_param("i", $id );
         $stmt->execute();
-        echo $stmt->error;
         if( $record = $stmt->get_result()->fetch_assoc() ) {
-            $stmt->close();
+            //$stmt->close();
             return new self(
                 $record['post_name'],
                 $record['post_url'],
@@ -66,11 +65,15 @@ class Post extends MetaObject
     }
 
     public function update( $conn ) {
+        
+        $lang_id = $this->lang->getLangId();
+
         $stmt = $conn->prepare( "UPDATE post SET post_name = ?, post_url = ?, post_content = ?, post_status = ?, " . 
                                 "post_category_id = ?, post_lang_id = ?, post_meta_title = ?, post_meta_description = ? WHERE post_id = ?");
         $stmt->bind_param("sssiiissi", $this->name, $this->url, $this->content, $this->status, $this->category_id,
-                                    $this->lang->getLangId(), $this->metaTitle, $this->metaDescription, $this->id );
+                                    $lang_id, $this->meta_title, $this->meta_description, $this->id );
         $stmt->execute();
+        
         $stmt->close();
     }
 
@@ -251,7 +254,7 @@ EOD;
     }
 
     public function getCategoryId() {
-        return $this->category;
+        return $this->category_id;
     }
 
     public function setCategoryId( $category_id ) {

@@ -20,7 +20,7 @@
                     </a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
-                            <a href="/admin/items">Posts</a>
+                            <a href="/admin/posts">Posts</a>
                         </li>
                         <li>
                             <a href="#">Categories</a>

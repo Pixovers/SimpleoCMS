@@ -9,9 +9,9 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/language.php";
 class TranslatableObject {
 
     //Language object
-    private $lang;
-    private $id;
-    private $default_lang_ref_id;
+    protected $lang;
+    protected $id;
+    protected $default_lang_ref_id;
 
     /*
      *  Method:             TranslatableObject::__construct()

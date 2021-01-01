@@ -29,11 +29,13 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
             include_once "../admin/login.php";
             exit();
 
-        case "/admin/items":
-            include_once "../admin/items.php";
+        case "/admin/posts":
+        case "/admin/posts/":
+            include_once "../admin/posts.php";
             exit();
 
-        case "/admin/new_post":
+        case "/admin/posts/new":
+        case "/admin/posts/new/":
             include_once "../admin/new_post.php";
             exit();
 
@@ -42,15 +44,18 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
             include_once "../admin/edit-post.php";
             exit();
 
-        case "/admin/new-category":
+        case "/admin/categories/new":
+        case "/admin/categories/new/":
             include_once "../admin/new-category.php";
             exit();
 
         case "/admin/languages/new":
+        case "/admin/languages/new/":
             include_once "../admin/new-language.php";
             exit();
 
         case "/admin/languages":
+        case "/admin/languages/":
             include_once "../admin/languages.php";
             exit();
 
@@ -60,6 +65,7 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
             exit();
 
         case "/admin/languages/delete":
+        case "/admin/languages/delete/":
             include_once "../admin/languages.php";
             exit();
     }

@@ -10,10 +10,10 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/translatable_object.php"
 class MetaObject extends TranslatableObject {
 
     //meta title text
-    private $meta_title;
+    protected $meta_title;
 
     //meta description text
-    private $meta_description;
+    protected $meta_description;
 
     /*
      *  Method:             MetaObject::__construct()

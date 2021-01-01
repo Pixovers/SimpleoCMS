@@ -7,8 +7,9 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/post.php";
 $post = Post::byId( $_CONN, $_GET['id'] );
 
 
-if (isset($_POST['title'])) {
 
+if (isset($_POST['title'])) {
+    echo var_dump($_POST);
     if (isset($_POST['content'])) {
         $content = $_POST['content'];
     } else {
@@ -33,6 +34,7 @@ if (isset($_POST['title'])) {
     $post->setCategoryId( $_POST['cat_id'] );
     $post->setMetaTitle( $meta_title );
     $post->setMetaDescription( $meta_description );
+    echo var_dump( $post );
     $post->update( $_CONN );
 }
 
@@ -83,7 +85,7 @@ if (isset($_POST['title'])) {
 
                         <div class="col-md-9 ">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="post_name_input" placeholder="Post title">
+                                <input type="text" class="form-control" id="post_name_input" placeholder="Post title" value="<?php echo $post->getName(); ?>">
                             </div>
                             <div class="card  mt-3">
                                 <div class="card-header py-0 ">
@@ -214,7 +216,7 @@ if (isset($_POST['title'])) {
                                     <div class="row">
                                         <div class="col-12">
 
-                                            <div id="editor" contenteditable="true" data-text="Ciao pino.."></div>
+                                            <div id="editor" contenteditable="true" data-text="Ciao pino.."><?php echo $post->getContent(); ?></div>
 
                                         </div>
                                     </div>
@@ -322,21 +324,21 @@ if (isset($_POST['title'])) {
 
 
                                 <div class="card bg-light mt-3 mb-3 shadow-sm ">
-                                    <div class="card-header">Header</div>
+                                    <div class="card-header">SEO</div>
                                     <div class="card-body">
                                         <div class="form-group">
                                             <label for="metaTitleInput">Meta Title</label>
-                                            <input type="text" class="form-control" id="metaTitleInput">
+                                            <input type="text" class="form-control" id="metaTitleInput" value="<?php echo $post->getMetaTitle(); ?>">
                                         </div>
 
                                         <div class="form-group">
                                             <label for="SlugInput">URL slug</label>
-                                            <input type="text" class="form-control" id="SlugInput" name="SlugInput">
+                                            <input type="text" class="form-control" id="SlugInput" name="SlugInput" value="<?php echo $post->getUrl(); ?>">
                                         </div>
 
                                         <div class="form-group">
                                             <label for="metaDescriptionInput">Meta description</label>
-                                            <textarea class="form-control" id="metaDescriptionInput" rows="3"></textarea>
+                                            <textarea class="form-control" id="metaDescriptionInput" rows="3"><?php echo $post->getMetaDescription(); ?></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -385,7 +387,7 @@ if (isset($_POST['title'])) {
                                             foreach ($categories as $cat) {
                                             ?>
                                                 <div class="form-check">
-                                                    <input class="form-check-input position-static" name="category" type="radio" checked id="cat_<?php echo $cat->getId(); ?>" value="<?php echo $cat->getId(); ?>" aria-label="">
+                                                    <input class="form-check-input position-static" name="category" type="radio" <?php if( $cat->getId() ==$post->getCategoryId() ) echo "checked"; ?> id="cat_<?php echo $cat->getId(); ?>" value="<?php echo $cat->getId(); ?>" aria-label="">
                                                     <label class="form-check-label"><?php echo $cat->getName(); ?></label>
                                                 </div>
 

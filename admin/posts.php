@@ -1,6 +1,6 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/language.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/post.php";
 
 $languages = Language::getAllLangueage($_CONN);
 
@@ -11,54 +11,69 @@ $languages = Language::getAllLangueage($_CONN);
 
 <head>
     <?php include_once "templates/head.php"; ?>
+
+
 </head>
+
 
 <body>
     <div class="wrapper">
         <?php include_once "templates/sidebar.php"; ?>
+
         <div id="content">
+
             <?php include_once "templates/navbar.php"; ?>
+
             <div class="container-fluid">
-                <h1>Languages</h1>
+                <h1>Posts</h1>
+                <?php
+                foreach ($languages as $lang) {
+                    $posts = Post::fetchAllByLang($_CONN, $lang);
+                ?>
+                    <div class="row">
 
-                <div class="row">
-                    <div class="col-12">
-                        <table data-toggle="table" data-buttons="buttons">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Code</th>
-                                    <th data-field="ciso" data-formatter="operateFormatter" data-events="operateEvents">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                foreach ($languages as $lang) {
-                                ?>
+                        <div class="col-12">
+                            <table data-toggle="table" data-buttons="buttons">
+                                <thead>
                                     <tr>
-                                        <td><?php echo $lang->getLangId(); ?></td>
-                                        <td><?php echo $lang->getLangName(); ?></td>
-                                        <td><?php echo $lang->getLangCode(); ?></td>
-                                        <td></td>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th data-field="github.name" data-formatter="operateFormatter" data-events="operateEvents">Actions</th>
                                     </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    foreach ($posts as $post) {
+                                    ?>
+                                        <tr>
+                                            <td><?php echo $post->getId(); ?></td>
+                                            <td><?php echo $post->getName(); ?></td>
+                                            <td><?php echo $post->getMetaDescription(); ?></td>
+                                            <td></td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
 
+                        </div>
                     </div>
-                </div>
-
+                <?php } ?>
 
             </div>
+
+
+
+
+
+
 
 
 
             <script>
                 window.operateEvents = {
                     'click .like': function(e, value, row) {
-                        console.log('You click like action, row: ' + JSON.stringify(row));
-                        window.location.href = "/admin/languages/edit/?id="+row[0];
+                        window.location.href = "/admin/posts/edit/?id="+row[0];
                     },
                     'click .remove': function(e, value, row) {
                         alert('You click remove action, row: ' + JSON.stringify(row))
@@ -79,6 +94,9 @@ $languages = Language::getAllLangueage($_CONN);
                 }
             </script>
 
+
+
+
             <script>
                 function buttons() {
                     return {
@@ -87,18 +105,26 @@ $languages = Language::getAllLangueage($_CONN);
                             icon: 'fa-plus',
                             event: function() {
 
-                                window.location.href = "/admin/languages/new";
+                                window.location.href = "/admin/posts/new";
 
                             },
                             attributes: {
-                                title: 'Add a new language'
+                                title: 'Add a new post'
                             }
                         }
                     }
                 }
             </script>
+
+
+
+
+
         </div>
     </div>
+
+
+
 
     <?php include_once "templates/footer.php"; ?>
 
