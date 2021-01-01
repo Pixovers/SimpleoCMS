@@ -13,11 +13,13 @@ class Post extends MetaObject
     private $url;
     private $content;
     private $status;
+    private $category_id;
 
     public function __construct(
         $name,
         $url,
         $content,
+        $category_id,
         $status,
         $lang,
         $id,
@@ -31,8 +33,46 @@ class Post extends MetaObject
         $this->url = $url;
         $this->content = $content;
         $this->status = $status;
+        $this->category_id = $category_id;
     }
 
+    public static function byId( $conn, $id ) {
+        $stmt = $conn->prepare("SELECT * FROM post p INNER JOIN language l ON l.lang_id = p.post_lang_id WHERE post_id = ?");
+        $stmt->bind_param("i", $id );
+        $stmt->execute();
+        echo $stmt->error;
+        if( $record = $stmt->get_result()->fetch_assoc() ) {
+            $stmt->close();
+            return new self(
+                $record['post_name'],
+                $record['post_url'],
+                $record['post_content'],
+                $record['post_category_id'],
+                $record['post_status'],
+                Language::byData(
+                    $record['lang_id'],
+                    $record['lang_name'],
+                    $record['lang_code']
+                ),
+                $record['post_id'],
+                $record['post_lang_ref'],
+                $record['post_meta_title'],
+                $record['post_meta_description']
+            );    
+        }
+        return NULL;
+        $stmt->close();
+        
+    }
+
+    public function update( $conn ) {
+        $stmt = $conn->prepare( "UPDATE post SET post_name = ?, post_url = ?, post_content = ?, post_status = ?, " . 
+                                "post_category_id = ?, post_lang_id = ?, post_meta_title = ?, post_meta_description = ? WHERE post_id = ?");
+        $stmt->bind_param("sssiiissi", $this->name, $this->url, $this->content, $this->status, $this->category_id,
+                                    $this->lang->getLangId(), $this->metaTitle, $this->metaDescription, $this->id );
+        $stmt->execute();
+        $stmt->close();
+    }
 
     public function fetchByLang($conn, $lang)
     {
@@ -44,6 +84,7 @@ class Post extends MetaObject
                 $record['post_name'],
                 $record['post_url'],
                 $record['post_content'],
+                $record['post_category_id'],
                 $record['post_status'],
                 Language::byData(
                     $record['lang_id'],
@@ -75,6 +116,7 @@ class Post extends MetaObject
                 $record['post_name'],
                 $record['post_url'],
                 $record['post_content'],
+                $record['post_category_id'],
                 $record['post_status'],
                 Language::byData(
                     $record['lang_id'],
@@ -103,6 +145,7 @@ class Post extends MetaObject
                 $record['post_name'],
                 $record['post_url'],
                 $record['post_content'],
+                $record['post_category_id'],
                 $record['post_status'],
                 Language::byData(
                     $record['lang_id'],
@@ -142,7 +185,6 @@ EOD;
             $stmt = $conn->prepare($sql_text);
             $stmt->bind_param("ssiisiss", $name, $content, $cat_id, $status, $url, $langId, $meta_title, $meta_description);
             $stmt->execute();
-            //fetching result would go here, but will be covered later
             $stmt->close();
 
             $id = $conn->query("SELECT LAST_INSERT_ID();")->fetch_assoc()['LAST_INSERT_ID()'];
@@ -206,5 +248,13 @@ EOD;
     public function setUrl($url)
     {
         $this->url = $url;
+    }
+
+    public function getCategoryId() {
+        return $this->category;
+    }
+
+    public function setCategoryId( $category_id ) {
+        $this->category_id = $category_id;
     }
 }

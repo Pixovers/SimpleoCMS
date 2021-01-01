@@ -35,7 +35,7 @@ class MetaObject extends TranslatableObject {
     }
 
     public function getMetaDescription() {
-        return $this->getMetaDescription;
+        return $this->meta_description;
     }
 
     public function setMetaTitle( $meta_title ) {

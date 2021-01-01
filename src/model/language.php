@@ -57,6 +57,25 @@ class Language
         return false;
     }
 
+        /*
+     *  Method:             Language::byId( $conn, $lang_id)
+     *  Description:        Static method used as constructor, to create a Language 
+     *                      object by providing $conn (mysqli connection)
+     *                      and $lang_id
+     */
+    public static function byId($conn, $lang_id)
+    {
+        $lang = new self();
+        $result = $conn->query("SELECT * FROM language WHERE lang_id = $lang_id");
+
+        if ($record = $result->fetch_assoc()) {
+            $lang->loadByData($record['lang_id'], $record['lang_name'], $record['lang_code']);
+            return $lang;
+        }
+
+        return false;
+    }
+
     /*
      *  Method:             Language::byData( $lang_id, $lang_name, $lang_code )
      *  Description:        Static method used as constructor, to create a Language 
@@ -114,7 +133,15 @@ class Language
     public static function addNew($conn, $lang_name, $lang_code)
     {
         $stmt = $conn->prepare("INSERT INTO language (lang_name, lang_code) VALUES ( ?, ? )");
-        $stmt->bind_param("ss", $lang_name, $lang_code );
+        $stmt->bind_param("ss", $lang_name, $lang_code);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    public function update($conn)
+    {
+        $stmt = $conn->prepare("UPDATE language SET lang_name = ?, lang_code = ? WHERE lang_id = ?");
+        $stmt->bind_param("ssi", $this->lang_name, $this->lang_code, $this->lang_id );
         $stmt->execute();
         $stmt->close();
     }

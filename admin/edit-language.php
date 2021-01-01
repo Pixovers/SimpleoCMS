@@ -1,16 +1,16 @@
 <?php
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/language.php";
-if (isset($_POST['submit'])) {
-    Language::addNew(
-        $_CONN,
-        $_POST['LangName'],
-        $_POST['LangCode']
-    );
 
+$lang = Language::byId( $_CONN, $_GET['id'] );
+
+if (isset($_POST['submit'])) {
+    
+    $lang->setLangName($_POST['LangName']);
+    $lang->setLangCode($_POST['LangCode']);
+    $lang->update($_CONN);
     header("location: /admin/languages");
     exit();
 }
-
 
 ?>
 
@@ -21,7 +21,6 @@ if (isset($_POST['submit'])) {
     <?php include_once "templates/head.php"; ?>
 
 </head>
-
 
 <body>
     <div class="wrapper">
@@ -42,18 +41,18 @@ if (isset($_POST['submit'])) {
                             <div class="card-body">
                                 <div class="form-group col">
                                     <label for="LangName">Language name</label>
-                                    <input type="text" class="form-control" id="LangName" name="LangName" required>
+                                    <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $lang->getLangName(); ?>" required>
                                 </div>
 
                                 <div class="form-group col-4">
                                     <label for="LangCode">Language code</label>
-                                    <input type="text" class="form-control" id="LangCode" name="LangCode" required>
+                                    <input type="text" class="form-control" id="LangCode" name="LangCode" value="<?php echo $lang->getLangCode(); ?>" required>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="text-right">
-                            <button class="btn btn-primary" type="submit" name="submit">Create</button>
+                            <button class="btn btn-primary" type="submit" name="submit">Refresh</button>
                         </div>
                     </form>
                 </div>

@@ -3,12 +3,9 @@
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/category.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/post.php";
 
-echo var_dump($_POST);
-if (isset($_GET['lang'])) {
-    $language = Language::byCode($_CONN, $_GET['lang']);
-} else {
-    $language = Language::getDefaultLanguage($_CONN);
-}
+
+$post = Post::byId( $_CONN, $_GET['id'] );
+
 
 if (isset($_POST['title'])) {
 
@@ -30,19 +27,13 @@ if (isset($_POST['title'])) {
         $meta_description = "";
     }
 
-
-    Post::addNew(
-        $_CONN,
-        $_POST['title'],
-        "url",
-        $content,
-        $_POST['cat_id'],
-        1,
-        $language,
-        NULL,
-        $meta_title,
-        $meta_description
-    );
+    $post->setName( $_POST['title'] );
+    $post->setUrl( "url" );
+    $post->setContent( $content );
+    $post->setCategoryId( $_POST['cat_id'] );
+    $post->setMetaTitle( $meta_title );
+    $post->setMetaDescription( $meta_description );
+    $post->update( $_CONN );
 }
 
 ?>
@@ -372,7 +363,7 @@ if (isset($_POST['title'])) {
                                         <div class="card-body">
                                             <h5 class="card-title">Language:</h5>
                                             <div class="form-group">
-                                                <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $language->getLangName(); ?>" readonly>
+                                                <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $post->getLang()->getLangName(); ?>" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -389,7 +380,7 @@ if (isset($_POST['title'])) {
                                         <div class="card-body">
                                             <h5 class="card-title">Category</h5>
                                             <?php
-                                            $categories = Category::fetchAllByLang($_CONN, $language);
+                                            $categories = Category::fetchAllByLang($_CONN, $post->getLang() );
 
                                             foreach ($categories as $cat) {
                                             ?>
