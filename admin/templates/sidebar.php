@@ -23,11 +23,11 @@
                             <a href="/admin/posts">Posts</a>
                         </li>
                         <li>
-                            <a href="#">Categories</a>
+                            <a href="/admin/categories">Categories</a>
                         </li>
-                        <li>
+                        <!--li>
                             <a href="#">Translaations</a>
-                        </li>
+                        </li-->
                     </ul>
                 </li>
                 <li>

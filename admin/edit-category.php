@@ -1,16 +1,16 @@
 <?php
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/category.php";
+
+$cat = Category::byId( $_CONN, $_GET['id'] );
+
 if (isset($_POST['submit'])) {
     $category_lang = Language::byName($_CONN, $_POST['languageSelect']);
-    Category::addNew(
-        $_CONN,
-        $_POST['TitleInput'],
-        $_POST['SlugInput'],
-        $category_lang,
-        NULL,
-        $_POST['metaTitleInput'],
-        $_POST['metaDescriptionInput']
-    );
+
+    $cat->setName( $_POST['TitleInput'] );
+    $cat->setUrl( $_POST['SlugInput'] );
+    $cat->setMetaTitle( $_POST['metaTitleInput'] );
+    $cat->setMetaDescription( $_POST['metaDescriptionInput'] );
+    $cat->update( $_CONN );
 }
 
 
@@ -44,23 +44,15 @@ if (isset($_POST['submit'])) {
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="TitleInput">Category Title</label>
-                                    <input type="text" class="form-control" id="TitleInput" name="TitleInput" required>
+                                    <input type="text" class="form-control" id="TitleInput" name="TitleInput" value="<?php echo $cat->getName(); ?>" required>
                                 </div>
                             </div>
                         </div>
                         <div class="card shadow-sm mt-2 mb-2">
                             <div class="card-body">
-                                <h5 class="card-title">language</h5>
+                                <h5 class="card-title">Language</h5>
                                 <div class="form-group">
-                                    <select class="form-control" id="languageSelect" name="languageSelect">
-                                        <?php
-                                        $languages = Language::getAllLangueage($_CONN);
-
-                                        foreach ($languages as $lang) {
-                                            echo '<option>' . $lang->getLangName() . '</option>';
-                                        }
-                                        ?>
-                                    </select>
+                                <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $cat->getLang()->getLangName(); ?>" readonly>
                                 </div>
                             </div>
                         </div>
@@ -71,22 +63,22 @@ if (isset($_POST['submit'])) {
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="metaTitleInput">Meta Title</label>
-                                    <input type="text" class="form-control" id="metaTitleInput" name="metaTitleInput">
+                                    <input type="text" class="form-control" id="metaTitleInput" name="metaTitleInput" value="<?php echo $cat->getMetaTitle(); ?>">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="SlugInput">URL slug</label>
-                                    <input type="text" class="form-control" id="SlugInput" name="SlugInput">
+                                    <input type="text" class="form-control" id="SlugInput" name="SlugInput" value="<?php echo $cat->getUrl(); ?>">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="metaDescriptionInput">Meta description</label>
-                                    <textarea class="form-control" id="metaDescriptionInput" name="metaDescriptionInput" rows="3"></textarea>
+                                    <textarea class="form-control" id="metaDescriptionInput" name="metaDescriptionInput" rows="3"><?php echo $cat->getMetaDescription(); ?></textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="text-right">
-                            <button class="btn btn-primary" type="submit" name="submit">Create</button>
+                            <button class="btn btn-primary" type="submit" name="submit">Update</button>
                         </div>
                     </form>
                 </div>

@@ -9,7 +9,6 @@ $post = Post::byId( $_CONN, $_GET['id'] );
 
 
 if (isset($_POST['title'])) {
-    echo var_dump($_POST);
     if (isset($_POST['content'])) {
         $content = $_POST['content'];
     } else {
@@ -34,7 +33,6 @@ if (isset($_POST['title'])) {
     $post->setCategoryId( $_POST['cat_id'] );
     $post->setMetaTitle( $meta_title );
     $post->setMetaDescription( $meta_description );
-    echo var_dump( $post );
     $post->update( $_CONN );
 }
 

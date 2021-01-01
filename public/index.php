@@ -49,6 +49,16 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
             include_once "../admin/new-category.php";
             exit();
 
+        case "/admin/categories":
+        case "/admin/categories":
+            include_once "../admin/categories.php";
+            exit();
+
+        case "/admin/categories/edit":
+        case "/admin/categories/edit/":
+            include_once "../admin/edit-category.php";
+            exit();
+
         case "/admin/languages/new":
         case "/admin/languages/new/":
             include_once "../admin/new-language.php";
