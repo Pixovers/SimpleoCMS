@@ -3,6 +3,7 @@ session_start();
 
 
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/lang_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/utils.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/db_utils.php";
 
 ini_set('display_errors', 1);
@@ -61,7 +62,8 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
 
         case "/admin/languages/new":
         case "/admin/languages/new/":
-            include_once "../admin/new-language.php";
+            $_ACTION = "new";
+            include_once "../admin/languages_handling.php";
             exit();
 
         case "/admin/languages":
@@ -71,12 +73,18 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
 
         case "/admin/languages/edit":
         case "/admin/languages/edit/":
-            include_once "../admin/edit-language.php";
+            $_ACTION = "edit";
+            include_once "../admin/languages_handling.php";
             exit();
 
         case "/admin/languages/delete":
         case "/admin/languages/delete/":
-            include_once "../admin/languages.php";
+            $_ACTION = "delete";
+            include_once "../admin/languages_handling.php";
+            exit();
+
+        default:
+            include_once( $_SERVER['DOCUMENT_ROOT'] . "/../pages/error_404.php");
             exit();
     }
 }
