@@ -41,7 +41,7 @@ if (isset($_ACTION)) {
                 header("location: /admin/languages");
                 exit();
             } else {
-                header("location: /admin/languages/edit/?id=".$_GET['id']."&error=delete");
+                header("location: /admin/languages/edit/?id=" . $_GET['id'] . "&error=delete");
                 exit();
             }
             break;
@@ -130,12 +130,35 @@ if (isset($_ACTION)) {
                         </div>
                     </form>
                 </div>
+                <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="link" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Error</h5>
+                            </div>
+                            <div class="modal-body">
+                                <p>Couldn't delete this language: other elements (such as posts and categories) references this language. </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!--page content-->
             </div>
         </div>
     </div>
 
     <?php include_once "templates/footer.php"; ?>
+
+    <?php if (isset($_GET['error'])) { ?>
+        <script>
+            console.log("dsfd");
+            $('#errorModal').modal('show');
+        </script>
+    <?php } ?>
 
 </body>
 

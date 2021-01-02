@@ -57,11 +57,10 @@ $languages = Language::getAllLangueage($_CONN);
             <script>
                 window.operateEvents = {
                     'click .like': function(e, value, row) {
-                        console.log('You click like action, row: ' + JSON.stringify(row));
                         window.location.href = "/admin/languages/edit/?id="+row[0];
                     },
                     'click .remove': function(e, value, row) {
-                        alert('You click remove action, row: ' + JSON.stringify(row))
+                        window.location.href = "/admin/languages/delete/?id="+row[0];
                     }
                 }
 
