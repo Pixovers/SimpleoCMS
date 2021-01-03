@@ -47,7 +47,8 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
 
         case "/admin/categories/new":
         case "/admin/categories/new/":
-            include_once "../admin/new-category.php";
+            $_ACTION = "new";
+            include_once "../admin/categories_handling.php";
             exit();
 
         case "/admin/categories":
@@ -57,7 +58,14 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
 
         case "/admin/categories/edit":
         case "/admin/categories/edit/":
-            include_once "../admin/edit-category.php";
+            $_ACTION = "edit";
+            include_once "../admin/categories_handling.php";
+            exit();
+
+        case "/admin/categories/delete":
+        case "/admin/categories/delete/":
+            $_ACTION = "delete";
+            include_once "../admin/categories_handling.php";
             exit();
 
         case "/admin/languages/new":
@@ -84,7 +92,7 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
             exit();
 
         default:
-            include_once( $_SERVER['DOCUMENT_ROOT'] . "/../pages/error_404.php");
+            include_once($_SERVER['DOCUMENT_ROOT'] . "/../pages/error_404.php");
             exit();
     }
 }

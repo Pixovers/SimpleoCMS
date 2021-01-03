@@ -58,13 +58,63 @@ class Category extends MetaObject
         $stmt->close();
     }
 
+    public static function delete($conn, $id)
+    {
+        $sql_text = <<<EOD
+    SELECT
+        TABLE_NAME,
+        COLUMN_NAME,
+        CONSTRAINT_NAME,
+        REFERENCED_TABLE_NAME,
+        REFERENCED_COLUMN_NAME
+    FROM
+        INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+    WHERE
+        REFERENCED_TABLE_SCHEMA = ?
+        AND REFERENCED_TABLE_NAME = 'category';
+EOD;
+        $stmt = $conn->prepare($sql_text);
+        $stmt->bind_param("s", DBUtils::readCredentials()['database']);
+        $stmt->execute();
+        $stmt_result = $stmt->get_result();
+        while ($record = $stmt_result->fetch_assoc()) {
+            if ($record['TABLE_NAME'] != "category") {
+                $table_name = $record['TABLE_NAME'];
+                $column_name = $record['COLUMN_NAME'];
+
+                $sql_text = "SELECT COUNT(*) FROM $table_name WHERE $column_name = ?";
+                $stmt_check = $conn->prepare($sql_text);
+                $stmt_check->bind_param("i", $id);
+                $stmt_check->execute();
+
+                $rows_count = $stmt_check->get_result()->fetch_assoc()['COUNT(*)'];
+                if ($rows_count > 0) {
+                    $stmt_check->close();
+                    $stmt->close();
+                    return false;
+                }
+
+                $stmt_check->close();
+            }
+        }
+        $stmt->close();
+        $conn->query("SET foreign_key_checks = 0");
+        $sql_text = "DELETE FROM category WHERE category_id = ?";
+        $stmt = $conn->prepare($sql_text);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+        $conn->query("SET foreign_key_checks = 1");
+        return true;
+    }
+
     public function update($conn)
     {
         $lang_id = $this->lang->getLangId();
 
         $stmt = $conn->prepare("UPDATE category SET cat_name = ?, cat_url = ?, cat_lang_id = ?, " .
             "cat_meta_title = ?, cat_meta_description = ? WHERE category_id = ?");
-        $stmt->bind_param("ssissi", $this->name, $this->url, $lang_id, $this->meta_title, $this->meta_description, $this->id );
+        $stmt->bind_param("ssissi", $this->name, $this->url, $lang_id, $this->meta_title, $this->meta_description, $this->id);
         $stmt->execute();
 
         $stmt->close();
