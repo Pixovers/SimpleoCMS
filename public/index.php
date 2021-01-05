@@ -30,6 +30,8 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
             include_once "../admin/login.php";
             exit();
 
+            // Posts      ----------------------------------------------
+
         case "/admin/posts":
         case "/admin/posts/":
             include_once "../admin/posts.php";
@@ -37,13 +39,24 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
 
         case "/admin/posts/new":
         case "/admin/posts/new/":
-            include_once "../admin/new_post.php";
+            
+            $_ACTION = "new";
+            include_once "../admin/posts_handling.php";
             exit();
 
         case "/admin/posts/edit":
         case "/admin/posts/edit/":
-            include_once "../admin/edit-post.php";
+            $_ACTION = "edit";
+            include_once "../admin/posts_handling.php";
             exit();
+
+        case "/admin/posts/edit":
+        case "/admin/posts/edit/":
+            $_ACTION = "delete";
+            include_once "../admin/posts_handling.php";
+            exit();
+
+            // Categories ----------------------------------------------
 
         case "/admin/categories/new":
         case "/admin/categories/new/":
@@ -52,7 +65,7 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
             exit();
 
         case "/admin/categories":
-        case "/admin/categories":
+        case "/admin/categories/":
             include_once "../admin/categories.php";
             exit();
 
@@ -67,6 +80,9 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
             $_ACTION = "delete";
             include_once "../admin/categories_handling.php";
             exit();
+
+
+            // Languaages ----------------------------------------------
 
         case "/admin/languages/new":
         case "/admin/languages/new/":
@@ -90,6 +106,9 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
             $_ACTION = "delete";
             include_once "../admin/languages_handling.php";
             exit();
+
+
+            // case default --------------------------------------------
 
         default:
             include_once($_SERVER['DOCUMENT_ROOT'] . "/../pages/error_404.php");

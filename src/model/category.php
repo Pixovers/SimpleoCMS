@@ -78,24 +78,29 @@ EOD;
         $stmt->execute();
         $stmt_result = $stmt->get_result();
         while ($record = $stmt_result->fetch_assoc()) {
+            $table_name = $record['TABLE_NAME'];
+            $column_name = $record['COLUMN_NAME'];
             if ($record['TABLE_NAME'] != "category") {
-                $table_name = $record['TABLE_NAME'];
-                $column_name = $record['COLUMN_NAME'];
-
                 $sql_text = "SELECT COUNT(*) FROM $table_name WHERE $column_name = ?";
                 $stmt_check = $conn->prepare($sql_text);
                 $stmt_check->bind_param("i", $id);
                 $stmt_check->execute();
-
-                $rows_count = $stmt_check->get_result()->fetch_assoc()['COUNT(*)'];
-                if ($rows_count > 0) {
-                    $stmt_check->close();
-                    $stmt->close();
-                    return false;
-                }
-
-                $stmt_check->close();
+            } else {
+                $sql_text = "SELECT COUNT(*) FROM $table_name WHERE $column_name = ? AND category_id != ?";
+                $stmt_check = $conn->prepare($sql_text);
+                $stmt_check->bind_param("ii", $id, $id);
+                $stmt_check->execute();
             }
+
+            $rows_count = $stmt_check->get_result()->fetch_assoc()['COUNT(*)'];
+
+            if ($rows_count > 0) {
+                $stmt_check->close();
+                $stmt->close();
+                return false;
+            }
+
+            $stmt_check->close();
         }
         $stmt->close();
         $conn->query("SET foreign_key_checks = 0");
