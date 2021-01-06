@@ -151,7 +151,7 @@ if (isset($_ACTION)) {
 
                         <div class="col-md-9 ">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="post_name_input" placeholder="Post title">
+                                <input type="text" class="form-control" id="post_name_input" placeholder="Post title" value="<?php if ($_ACTION == "edit") echo $post->getName(); ?>">
                             </div>
                             <div class="card  mt-3">
                                 <div class="card-header py-0 ">
@@ -276,13 +276,12 @@ if (isset($_ACTION)) {
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                                 <div class="card-body p-1">
                                     <div class="row">
                                         <div class="col-12">
 
-                                            <div id="editor" contenteditable="true" data-text="Ciao pino.."></div>
+                                            <div id="editor" contenteditable="true" data-text="Write text here..."><?php if( $_ACTION == "edit" ) { echo $post->getContent(); } ?></div>
 
                                         </div>
                                     </div>
@@ -394,17 +393,17 @@ if (isset($_ACTION)) {
                                     <div class="card-body">
                                         <div class="form-group">
                                             <label for="metaTitleInput">Meta Title</label>
-                                            <input type="text" class="form-control" id="metaTitleInput">
+                                            <input type="text" class="form-control" id="metaTitleInput" value="<?php if ($_ACTION == "edit") echo $post->getMetaTitle(); ?>">
                                         </div>
 
                                         <div class="form-group">
                                             <label for="SlugInput">URL slug</label>
-                                            <input type="text" class="form-control" id="SlugInput" name="SlugInput">
+                                            <input type="text" class="form-control" id="SlugInput" name="SlugInput" value="<?php if ($_ACTION == "edit") echo $post->getUrl(); ?>">
                                         </div>
 
                                         <div class="form-group">
                                             <label for="metaDescriptionInput">Meta description</label>
-                                            <textarea class="form-control" id="metaDescriptionInput" rows="3"></textarea>
+                                            <textarea class="form-control" id="metaDescriptionInput" rows="3"><?php if ($_ACTION == "edit") echo $post->getMetaDescription(); ?></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -431,11 +430,7 @@ if (isset($_ACTION)) {
                                         <div class="card-body">
                                             <h5 class="card-title">Language:</h5>
                                             <div class="form-group">
-                                            <?php if( $_ACTION == "new" ) { ?>
                                                 <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $language->getLangName(); ?>" readonly>
-                                            <?php } else if( $_ACTION == "edit" ) { ?>
-                                                <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $post->getLang()->getLangName(); ?>" readonly>
-                                            <?php } ?>
                                             </div>
                                         </div>
                                     </div>
@@ -457,7 +452,7 @@ if (isset($_ACTION)) {
                                             foreach ($categories as $cat) {
                                             ?>
                                                 <div class="form-check">
-                                                    <input class="form-check-input position-static" name="category" type="radio" checked id="cat_<?php echo $cat->getId(); ?>" value="<?php echo $cat->getId(); ?>" aria-label="">
+                                                    <input class="form-check-input position-static" name="category" type="radio" <?php if ($_ACTION == "edit" && $cat->getId() == $post->getCategoryId() ) echo "checked"; ?> id="cat_<?php echo $cat->getId(); ?>" value="<?php echo $cat->getId(); ?>" aria-label="">
                                                     <label class="form-check-label"><?php echo $cat->getName(); ?></label>
                                                 </div>
 
@@ -495,7 +490,6 @@ if (isset($_ACTION)) {
 
 
                 </div>
-                <!--ffdfd-->
 
                 <!--page content-->
             </div>
