@@ -76,7 +76,7 @@ $languages = Language::getAllLangueage($_CONN);
                         window.location.href = "/admin/posts/edit/?id="+row[0];
                     },
                     'click .remove': function(e, value, row) {
-                        alert('You click remove action, row: ' + JSON.stringify(row))
+                        window.location.href = "/admin/posts/delete/?id="+row[0];
                     }
                 }
 

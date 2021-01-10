@@ -94,7 +94,14 @@ if (isset($_ACTION)) {
             break;
 
         case "delete":
-
+            if (Post::delete($_CONN, $_GET['id'])) {
+                header("location: /admin/posts");
+                exit();
+            } else {
+                header("location: /admin/posts/edit/?id=" . $_GET['id'] . "&error=delete");
+                exit();
+            }
+            
             break;
 
         default:

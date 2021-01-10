@@ -64,6 +64,63 @@ class Post extends MetaObject
         
     }
 
+    public static function delete($conn, $id)
+    {
+        $sql_text = <<<EOD
+    SELECT
+        TABLE_NAME,
+        COLUMN_NAME,
+        CONSTRAINT_NAME,
+        REFERENCED_TABLE_NAME,
+        REFERENCED_COLUMN_NAME
+    FROM
+        INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+    WHERE
+        REFERENCED_TABLE_SCHEMA = ?
+        AND REFERENCED_TABLE_NAME = 'post';
+EOD;
+        $stmt = $conn->prepare($sql_text);
+        $stmt->bind_param("s", DBUtils::readCredentials()['database']);
+        $stmt->execute();
+        $stmt_result = $stmt->get_result();
+        while ($record = $stmt_result->fetch_assoc()) {
+            $table_name = $record['TABLE_NAME'];
+            $column_name = $record['COLUMN_NAME'];
+            
+            echo "Tabella $table_name colonna: $column_name | ";
+            if ($record['TABLE_NAME'] != "post") {
+                $sql_text = "SELECT COUNT(*) FROM $table_name WHERE $column_name = ?";
+                $stmt_check = $conn->prepare($sql_text);
+                $stmt_check->bind_param("i", $id);
+                $stmt_check->execute();
+            } else {
+                $sql_text = "SELECT COUNT(*) FROM $table_name WHERE $column_name = ? AND post_id != ?";
+                $stmt_check = $conn->prepare($sql_text);
+                $stmt_check->bind_param("ii", $id, $id);
+                $stmt_check->execute();
+            }
+
+            $rows_count = $stmt_check->get_result()->fetch_assoc()['COUNT(*)'];
+
+            if ($rows_count > 0) {
+                $stmt_check->close();
+                $stmt->close();
+                return false;
+            }
+
+            $stmt_check->close();
+        }
+        $stmt->close();
+        $conn->query("SET foreign_key_checks = 0");
+        $sql_text = "DELETE FROM post WHERE post_id = ?";
+        $stmt = $conn->prepare($sql_text);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+        $conn->query("SET foreign_key_checks = 1");
+        return true;
+    }
+
     public function update( $conn ) {
         
         $lang_id = $this->lang->getLangId();

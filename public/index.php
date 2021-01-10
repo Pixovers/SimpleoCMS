@@ -50,8 +50,8 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json")) 
             include_once "../admin/posts_handling.php";
             exit();
 
-        case "/admin/posts/edit":
-        case "/admin/posts/edit/":
+        case "/admin/posts/delete":
+        case "/admin/posts/delete/":
             $_ACTION = "delete";
             include_once "../admin/posts_handling.php";
             exit();
