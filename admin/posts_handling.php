@@ -6,15 +6,62 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/post.php";
 if (isset($_ACTION)) {
     switch ($_ACTION) {
         case "new":
-            //echo var_dump($_POST);
-            if (isset($_GET['lang'])) {
+            //fetch default language
+            $default_language = Language::getDefaultLanguage($_CONN);
+
+            //check if lang is set
+            if( isset( $_GET['lang']) ) {
                 $language = Language::byCode($_CONN, $_GET['lang']);
+                if( !$language ) {
+                    Utils::error_404();
+                }
             } else {
-                $language = Language::getDefaultLanguage($_CONN);
+                $language = $default_language;
+            }
+
+            //check if default language
+            if( $language->getLangCode() == $default_language->getLangCode() ) {
+
+                //in defualt language translations couldn't exist
+                if( isset( $_GET['ref'] ) ) {
+                    Utils::error_404();
+                }
+
+            } else {
+
+                //in non-defualt language translations must exist
+                if( isset( $_GET['ref'] ) ) {
+                    //main post
+                    $post_ref = Post::byId($_CONN,$_GET['ref']);
+                    
+                    if ($post_ref) {
+
+                        //check if extist others translations
+                        $sql_text = "SELECT COUNT(*) FROM post WHERE post_lang_ref = ? " .
+                            " AND post_lang_id = ?";
+
+                        $stmt_check = $_CONN->prepare($sql_text);
+                        $lang_id = $language->getLangId();
+                        $stmt_check->bind_param("ii", $_GET['ref'], $lang_id );
+                        $stmt_check->execute();
+                        
+                        $result = $stmt_check->get_result()->fetch_assoc()['COUNT(*)'];
+
+                        //if translations already exists:
+                        if( $result != 0 ) {
+                            Utils::error_404();
+                        }
+                    } else {
+                        
+                        Utils::error_404();
+                    }
+                } else {
+                    Utils::error_404();
+                }
             }
 
             if (isset($_POST['title'])) {
-
+                echo var_dump($_POST);
                 if (isset($_POST['content'])) {
                     $content = $_POST['content'];
                 } else {
@@ -33,7 +80,13 @@ if (isset($_ACTION)) {
                     $meta_description = "";
                 }
 
+                if( isset($_POST['lang_ref']) ) {
+                    $lang_ref = $_POST['lang_ref'];
+                } else {
+                    $lang_ref = null;
+                }
 
+                
                 Post::addNew(
                     $_CONN,
                     $_POST['title'],
@@ -42,10 +95,11 @@ if (isset($_ACTION)) {
                     $_POST['cat_id'],
                     1,
                     $language,
-                    NULL,
+                    $lang_ref,
                     $meta_title,
                     $meta_description
                 );
+                
 
                 header("location: /admin/posts");
                 exit();
@@ -101,7 +155,7 @@ if (isset($_ACTION)) {
                 header("location: /admin/posts/edit/?id=" . $_GET['id'] . "&error=delete");
                 exit();
             }
-            
+
             break;
 
         default:
@@ -288,7 +342,9 @@ if (isset($_ACTION)) {
                                     <div class="row">
                                         <div class="col-12">
 
-                                            <div id="editor" contenteditable="true" data-text="Write text here..."><?php if( $_ACTION == "edit" ) { echo $post->getContent(); } ?></div>
+                                            <div id="editor" contenteditable="true" data-text="Write text here..."><?php if ($_ACTION == "edit") {
+                                                                                                                        echo $post->getContent();
+                                                                                                                    } ?></div>
 
                                         </div>
                                     </div>
@@ -439,6 +495,40 @@ if (isset($_ACTION)) {
                                             <div class="form-group">
                                                 <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $language->getLangName(); ?>" readonly>
                                             </div>
+                                            <?php
+                                                if( $_ACTION == "edit") {
+                                                    $langs = Language::getAllLangueage( $_CONN );
+                                                    $posts = Post::fetchTranslationsByRef( $post->getDefaultLangRefId(), $_CONN );
+                                                    foreach( $langs as $lang ) {
+                                                        if( $lang->getLangId() != $language->getLangId() ) {
+                                                        ?>
+
+                                                        <div class="row">
+                                                            <div class="col-9"><?php echo $lang->getLangName(); ?></div>
+                                                            <div class="col-3">
+                                                            <?php
+                                                                $found = null;
+                                                                for( $i = 0; $i < count($posts); $i+=1 ) {
+                                                                    if($posts[$i]->getLang()->getLangId() == $lang->getLangId() ) {
+                                                                        $found = $i;
+                                                                    }
+                                                                }
+                                                                if( $found != null ) {
+                                                                    echo "<a href=\"/admin/posts/edit/?id=" . $posts[$found]->getId() . "\"><i class=\"fas fa-pencil-alt\"></i></a>";
+                                                                } else {
+                                                                    echo "<a href=\"/admin/posts/new/?lang=".$lang->getLangCode()."&ref=" . $post->getDefaultLangRefId() . "\"><i class=\"fas fa-plus\"></i></a>";
+                                                                }
+                                                            ?>
+                                                            </div>
+                                                            
+                                                        </div>
+
+                                                        <?php
+                                                        }
+                                                    }
+                                                }
+
+                                            ?>
                                         </div>
                                     </div>
 
@@ -459,7 +549,7 @@ if (isset($_ACTION)) {
                                             foreach ($categories as $cat) {
                                             ?>
                                                 <div class="form-check">
-                                                    <input class="form-check-input position-static" name="category" type="radio" <?php if ($_ACTION == "edit" && $cat->getId() == $post->getCategoryId() ) echo "checked"; ?> id="cat_<?php echo $cat->getId(); ?>" value="<?php echo $cat->getId(); ?>" aria-label="">
+                                                    <input class="form-check-input position-static" name="category" type="radio" <?php if ($_ACTION == "edit" && $cat->getId() == $post->getCategoryId()) echo "checked"; ?> id="cat_<?php echo $cat->getId(); ?>" value="<?php echo $cat->getId(); ?>" aria-label="">
                                                     <label class="form-check-label"><?php echo $cat->getName(); ?></label>
                                                 </div>
 
@@ -884,6 +974,7 @@ if (isset($_ACTION)) {
     </script>
 
     <script>
+
         function encodeSlug($str) {
             const regex = /\[|\]|\(|\)|\{|\}|\.|:|,|;|\!|\"|\£|\$|\%|\&|\=|\?|\^|\_|\\|\/|\s/gi;
             let out = "";
@@ -894,16 +985,15 @@ if (isset($_ACTION)) {
         }
 
         class Post {
-            constructor(title, content, cat_id, meta_title, meta_description) {
+            constructor(title, content, cat_id, meta_title, meta_description, lang_ref) {
                 this.title = title;
                 this.content = content;
                 this.cat_id = cat_id;
                 this.meta_title = meta_title;
                 this.meta_description = meta_description;
+                this.lang_ref = lang_ref;
             }
         }
-
-
 
         const title_input = document.getElementById('post_name_input');
         const slug_input = document.getElementById('SlugInput');
@@ -917,12 +1007,14 @@ if (isset($_ACTION)) {
             slug_input.value = encodeSlug(SlugInput.value);
         });
 
+        //create new post
         function createPost() {
             if (document.getElementById('post_name_input').value == "") {
                 document.getElementById('error_msg').innerHTML = "Please enter a valid Post Title.";
                 $('#modal_error').modal('show');
             } else {
 
+                //reading category
                 var cat_radios = document.getElementsByName('category');
                 var cat_id;
                 for (var i = 0, length = cat_radios.length; i < length; i++) {
@@ -932,25 +1024,33 @@ if (isset($_ACTION)) {
                     }
                 }
 
+                // post content
                 var content = "";
 
+                //check if editor is in source code mdoe or not
                 if (document.getElementById('sourceText')) {
                     content = document.getElementById('sourceText').innerHTML;
                 } else {
                     content = document.getElementById('editor').innerHTML;
                 }
 
+
+                var url = new URL(window.location.href);
+                
+            
+                //create post
                 var post = new Post(
                     document.getElementById('post_name_input').value,
                     content,
                     cat_id,
                     document.getElementById('metaTitleInput').value,
-                    document.getElementById('metaDescriptionInput').value
+                    document.getElementById('metaDescriptionInput').value,
+                    url.searchParams.get("ref")
                 )
 
+                //submit
                 $.redirect('', post);
             }
-
         }
     </script>
 

@@ -48,6 +48,14 @@ class TranslatableObject {
         
     }
 
+    public static function fetchTranslationsByRef( $ref, $conn ) {
+
+    }
+
+    public function fetchTranslations( $conn ) {
+
+    }
+
     /*      GETTER - SETTER methods     */
 
     public function getLang() {

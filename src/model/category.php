@@ -223,10 +223,8 @@ SELECT LAST_INSERT_ID();
 EOD;
             $conn->multi_query($sql_text);
 
-            //fisrt query result
             $conn->store_result();
 
-            //second query result: id of last record
             $conn->next_result();
             $id = $conn->store_result()->fetch_assoc()['LAST_INSERT_ID()'];
             $conn->query("UPDATE category set cat_lang_ref=$id WHERE category_id=$id");
@@ -245,6 +243,7 @@ EOD;
     {
         return Category::fetchAllByLang($conn, Language::getDefaultLanguage($conn));
     }
+
 
 
     /*      GETTER - SETTER methods     */

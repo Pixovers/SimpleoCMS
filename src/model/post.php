@@ -252,12 +252,13 @@ EOD;
             $conn->query("UPDATE post set post_lang_ref=$id WHERE post_id=$id");
         } else {
             $sql_text = <<<EOD
-INSERT INTO post (post_name,post_content,post_status,post_url,post_lang_id,post_lang_ref,post_meta_title,post_meta_description)
-VALUES ("$name","$content","$status","$url",$langId,$default_lang_ref_id,"$meta_title","$meta_description");
+INSERT INTO post (post_name,post_content,post_category_id,post_status,post_url,post_lang_id,post_lang_ref,post_meta_title,post_meta_description)
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?);
 EOD;
-            if ($conn->query($sql_text) == false) {
-                return false;
-            }
+            $stmt = $conn->prepare($sql_text);
+            $stmt->bind_param("ssiisiiss", $name, $content, $cat_id, $status, $url, $langId, $default_lang_ref_id, $meta_title, $meta_description);
+            $stmt->execute();
+            $stmt->close();
         }
     }
 
@@ -265,7 +266,43 @@ EOD;
     {
         return Category::fetchAllByLang($conn, Language::getDefaultLanguage($conn));
     }
+ 
+    public static function fetchTranslationsByRef( $ref, $conn ) {
+        $sql_text = "SELECT * FROM post p INNER JOIN language lang ON lang.lang_id = p.post_lang_id WHERE post_lang_ref = ?";
+        $stmt = $conn->prepare($sql_text);
+        $stmt->bind_param("i",$ref );
+        $stmt->execute();
+        
 
+        $result = $stmt->get_result();
+        $stmt->close();
+        $posts = array();
+
+        while ($record = $result->fetch_assoc()) {
+            $posts[] =  new self(
+                $record['post_name'],
+                $record['post_url'],
+                $record['post_content'],
+                $record['post_category_id'],
+                $record['post_status'],
+                Language::byData(
+                    $record['lang_id'],
+                    $record['lang_name'],
+                    $record['lang_code']
+                ),
+                $record['post_id'],
+                $record['post_lang_ref'],
+                $record['post_meta_title'],
+                $record['post_meta_description']
+            );
+        }
+
+        return $posts;
+    }
+
+    public function fetchTranslations( $conn ) {
+        return Post::fetchTranslationsByRef( $this->getDefaultLangRefId() );
+    }
 
 
     /*      GETTER - SETTER methods     */

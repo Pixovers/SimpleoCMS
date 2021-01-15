@@ -7,6 +7,8 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/category.php";
 if (isset($_ACTION)) {
     switch ($_ACTION) {
         case "new":
+            
+
             if (isset($_POST['submit'])) {
                 $category_lang = Language::byName($_CONN, $_POST['languageSelect']);
                 Category::addNew(
@@ -52,7 +54,6 @@ if (isset($_ACTION)) {
                 header("location: /admin/categories/edit/?id=" . $_GET['id'] . "&error=delete");
                 exit();
             }
-            break;
             break;
 
         default:
