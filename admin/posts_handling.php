@@ -495,25 +495,29 @@ if (isset($_ACTION)) {
                                             <div class="form-group">
                                                 <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $language->getLangName(); ?>" readonly>
                                             </div>
+
                                             <?php
+                                                
                                                 if( $_ACTION == "edit") {
                                                     $langs = Language::getAllLangueage( $_CONN );
                                                     $posts = Post::fetchTranslationsByRef( $post->getDefaultLangRefId(), $_CONN );
+                                                    
                                                     foreach( $langs as $lang ) {
                                                         if( $lang->getLangId() != $language->getLangId() ) {
+                                                            
                                                         ?>
 
                                                         <div class="row">
                                                             <div class="col-9"><?php echo $lang->getLangName(); ?></div>
                                                             <div class="col-3">
                                                             <?php
-                                                                $found = null;
+                                                                $found = -1;
                                                                 for( $i = 0; $i < count($posts); $i+=1 ) {
                                                                     if($posts[$i]->getLang()->getLangId() == $lang->getLangId() ) {
                                                                         $found = $i;
                                                                     }
                                                                 }
-                                                                if( $found != null ) {
+                                                                if( $found != -1 ) {
                                                                     echo "<a href=\"/admin/posts/edit/?id=" . $posts[$found]->getId() . "\"><i class=\"fas fa-pencil-alt\"></i></a>";
                                                                 } else {
                                                                     echo "<a href=\"/admin/posts/new/?lang=".$lang->getLangCode()."&ref=" . $post->getDefaultLangRefId() . "\"><i class=\"fas fa-plus\"></i></a>";
