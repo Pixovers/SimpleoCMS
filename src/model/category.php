@@ -9,7 +9,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/meta_object.php";
  */
 class Category extends MetaObject
 {
-
+ 
     private $name;
     private $url;
 
@@ -244,6 +244,39 @@ EOD;
         return Category::fetchAllByLang($conn, Language::getDefaultLanguage($conn));
     }
 
+    public static function fetchTranslationsByRef( $ref, $conn ) {
+        $sql_text = "SELECT * FROM category cat INNER JOIN language lang ON lang.lang_id = cat.cat_lang_id WHERE cat_lang_ref = ?";
+        $stmt = $conn->prepare($sql_text);
+        $stmt->bind_param("i",$ref );
+        $stmt->execute();
+        
+
+        $result = $stmt->get_result();
+        $stmt->close();
+        $posts = array();
+
+        while ($record = $result->fetch_assoc()) {
+            $categories[] = new self(
+                $record['cat_name'],
+                $record['cat_url'],
+                Language::byData(
+                    $record['lang_id'],
+                    $record['lang_name'],
+                    $record['lang_code']
+                ),
+                $record['category_id'],
+                $record['cat_lang_ref'],
+                $record['cat_meta_title'],
+                $record['cat_meta_description']
+            );
+        }
+
+        return $categories;
+    }
+
+    public function fetchTranslations( $conn ) {
+        return Post::fetchTranslationsByRef( $this->getDefaultLangRefId() );
+    }
 
 
     /*      GETTER - SETTER methods     */

@@ -4,18 +4,72 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/category.php";
 
 
 
+
 if (isset($_ACTION)) {
     switch ($_ACTION) {
         case "new":
-            
+            //fetch default language
+            $default_language = Language::getDefaultLanguage($_CONN);
+
+            //check if lang is set
+            if( isset( $_GET['lang']) ) {
+                $language = Language::byCode($_CONN, $_GET['lang']);
+                if( !$language ) {
+                    Utils::error_404();
+                }
+            } else {
+                $language = $default_language;
+            }
+
+            //check if default language
+            if( $language->getLangCode() == $default_language->getLangCode() ) {
+
+                //in defualt language translations couldn't exist
+                if( isset( $_GET['ref'] ) ) {
+                    Utils::error_404();
+                }
+
+            } else {
+
+                //in non-defualt language translations must exist
+                if( isset( $_GET['ref'] ) ) {
+                    //main category
+                    $cat_ref = Category::byId($_CONN,$_GET['ref']);
+                    
+                    if ($cat_ref) {
+
+                        //check if extist others translations
+                        $sql_text = "SELECT COUNT(*) FROM category WHERE cat_lang_ref = ? " .
+                            " AND cat_lang_id = ?";
+
+                        $stmt_check = $_CONN->prepare($sql_text);
+                        $lang_id = $language->getLangId();
+                        $stmt_check->bind_param("ii", $_GET['ref'], $lang_id );
+                        $stmt_check->execute();
+                        
+                        $result = $stmt_check->get_result()->fetch_assoc()['COUNT(*)'];
+
+                        //if translations already exists:
+                        if( $result != 0 ) {
+                            Utils::error_404();
+                        }
+                    } else {
+                        
+                        Utils::error_404();
+                    }
+                } else {
+                    Utils::error_404();
+                }
+            }
+
+            //-----
 
             if (isset($_POST['submit'])) {
-                $category_lang = Language::byName($_CONN, $_POST['languageSelect']);
                 Category::addNew(
                     $_CONN,
                     $_POST['TitleInput'],
                     $_POST['SlugInput'],
-                    $category_lang,
+                    $language,
                     NULL,
                     $_POST['metaTitleInput'],
                     $_POST['metaDescriptionInput']
@@ -30,6 +84,8 @@ if (isset($_ACTION)) {
             if (isset($_GET['id'])) {
                 $cat = Category::byId($_CONN, $_GET['id']);
                 if ($cat) {
+                    $language = $cat->getLang();
+
                     if (isset($_POST['submit'])) {
 
                         $cat->setName($_POST['TitleInput']);
@@ -102,20 +158,46 @@ if (isset($_ACTION)) {
                             <div class="card-body">
                                 <h5 class="card-title">language</h5>
                                 <div class="form-group">
-                                    <?php if ($_ACTION == "new") { ?>
-                                        <select class="form-control" id="languageSelect" name="languageSelect">
-                                            <?php
-                                            $languages = Language::getAllLangueage($_CONN);
-
-                                            foreach ($languages as $lang) {
-                                                echo '<option>' . $lang->getLangName() . '</option>';
-                                            }
-                                            ?>
-                                        </select>
-                                    <?php } else if ($_ACTION == "edit") { ?>
-                                        <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $cat->getLang()->getLangName(); ?>" readonly>
-                                    <?php } ?>
+                                    <input type="text" class="form-control" id="LangName" name="LangName" value="<?php echo $language->getLangName(); ?>" readonly>
                                 </div>
+                                            <?php
+                                                
+                                                if( $_ACTION == "edit") {
+                                                    $langs = Language::getAllLangueage( $_CONN );
+                                                    $cats = Category::fetchTranslationsByRef( $cat->getDefaultLangRefId(), $_CONN );
+                                                    
+                                                    foreach( $langs as $lang ) {
+                                                        if( $lang->getLangId() != $language->getLangId() ) {
+                                                            
+                                                        ?>
+
+                                                        <div class="row">
+                                                            <div class="col-9"><?php echo $lang->getLangName(); ?></div>
+                                                            <div class="col-3">
+                                                            <?php
+                                                                $found = -1;
+                                                                for( $i = 0; $i < count($cats); $i+=1 ) {
+                                                                    if($cats[$i]->getLang()->getLangId() == $lang->getLangId() ) {
+                                                                        $found = $i;
+                                                                    }
+                                                                }
+                                                                if( $found != -1 ) {
+                                                                    echo "<a href=\"/admin/category/edit/?id=" . $cats[$found]->getId() . "\"><i class=\"fas fa-pencil-alt\"></i></a>";
+                                                                } else {
+                                                                    echo "<a href=\"/admin/category/new/?lang=".$lang->getLangCode()."&ref=" . $cat->getDefaultLangRefId() . "\"><i class=\"fas fa-plus\"></i></a>";
+                                                                }
+                                                            ?>
+                                                            </div>
+                                                            
+                                                        </div>
+
+                                                        <?php
+                                                        }
+                                                    }
+                                                }
+
+                                            ?>
+
                             </div>
                         </div>
                         <div class="card bg-light mt-3 mb-3 shadow-sm ">

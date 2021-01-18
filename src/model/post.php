@@ -8,7 +8,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/meta_object.php";
  */
 class Post extends MetaObject
 {
-
+ 
     private $name;
     private $url;
     private $content;
