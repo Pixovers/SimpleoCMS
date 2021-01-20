@@ -11,8 +11,6 @@ $languages = Language::getAllLangueage($_CONN);
 
 <head>
     <?php include_once "templates/head.php"; ?>
-
-
 </head>
 
 
@@ -33,7 +31,7 @@ $languages = Language::getAllLangueage($_CONN);
                     <div class="row">
 
                         <div class="col-12">
-                            <table data-toggle="table" data-buttons="buttons_<?php echo $lang->getLangCode(); ?>">
+                            <table data-toggle="table" data-buttons="buttons">
                                 <thead>
                                     <tr>
                                         <th>Id</th>
@@ -89,24 +87,23 @@ $languages = Language::getAllLangueage($_CONN);
 
 
 
-            <?php foreach ($languages as $lang) { ?>
             <script>
-                function buttons_<?php echo $lang->getLangCode(); ?>() {
+                function buttons() {
                     return {
                         btnAdd: {
-                            text: 'Add new row',
+                            text: 'Add new category',
                             icon: 'fa-plus',
                             event: function() {
-                                window.location.href = "/admin/posts/new/?lang=<?php echo $lang->getLangCode(); ?>";
+                                window.location.href = "/admin/categories/new";
                             },
                             attributes: {
-                                title: 'Add a new post'
+                                title: 'Add a new category'
                             }
                         }
                     }
                 }
             </script>
-            <?php } ?>
+            
 
 
 

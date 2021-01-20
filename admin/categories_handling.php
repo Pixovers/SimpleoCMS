@@ -10,7 +10,7 @@ if (isset($_ACTION)) {
         case "new":
             //fetch default language
             $default_language = Language::getDefaultLanguage($_CONN);
-
+            
             //check if lang is set
             if( isset( $_GET['lang']) ) {
                 $language = Language::byCode($_CONN, $_GET['lang']);
@@ -20,7 +20,7 @@ if (isset($_ACTION)) {
             } else {
                 $language = $default_language;
             }
-
+            
             //check if default language
             if( $language->getLangCode() == $default_language->getLangCode() ) {
 
@@ -65,12 +65,18 @@ if (isset($_ACTION)) {
             //-----
 
             if (isset($_POST['submit'])) {
+                if( isset($_GET['ref']) ) {
+                    $lang_ref = $_GET['ref'];
+                } else {
+                    $lang_ref = null;
+                }
+
                 Category::addNew(
                     $_CONN,
                     $_POST['TitleInput'],
                     $_POST['SlugInput'],
                     $language,
-                    NULL,
+                    $lang_ref,
                     $_POST['metaTitleInput'],
                     $_POST['metaDescriptionInput']
                 );
@@ -182,9 +188,9 @@ if (isset($_ACTION)) {
                                                                     }
                                                                 }
                                                                 if( $found != -1 ) {
-                                                                    echo "<a href=\"/admin/category/edit/?id=" . $cats[$found]->getId() . "\"><i class=\"fas fa-pencil-alt\"></i></a>";
+                                                                    echo "<a href=\"/admin/categories/edit/?id=" . $cats[$found]->getId() . "\"><i class=\"fas fa-pencil-alt\"></i></a>";
                                                                 } else {
-                                                                    echo "<a href=\"/admin/category/new/?lang=".$lang->getLangCode()."&ref=" . $cat->getDefaultLangRefId() . "\"><i class=\"fas fa-plus\"></i></a>";
+                                                                    echo "<a href=\"/admin/categories/new/?lang=".$lang->getLangCode()."&ref=" . $cat->getDefaultLangRefId() . "\"><i class=\"fas fa-plus\"></i></a>";
                                                                 }
                                                             ?>
                                                             </div>
