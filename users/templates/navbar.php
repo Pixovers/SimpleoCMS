@@ -5,22 +5,24 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <?php 
+    $currenturl = $_SERVER['PHP_SELF'];
+
     
     ?>
+
+  
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link 
           
-          <?php 
-          if()
-          stripos($_SERVER['PHP_SELF'],'index.php') ? 'active' : ''?>"
+          <?=(stripos($_SERVER['PHP_SELF'],'index') && empty($_GET['action'])) ? 'active' : '' ?>"
+       
         
-        
-         aria-current="page" href="index.php">Users</a>
+ href="index.php">Users</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="index.php?action=insert"><i class="fas fa-user-plus"></i>New User</a>
+          <a class="nav-link " href="index.php?action=insert"><i class="fas fa-user-plus"></i>New User</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -44,3 +46,4 @@
     </div>
   </div>
 </nav>
+
