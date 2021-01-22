@@ -1,7 +1,7 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/category.php";
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/post.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/model/category.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/model/post.php";
 
 if (isset($_ACTION)) {
     switch ($_ACTION) {
@@ -553,7 +553,7 @@ if (isset($_ACTION)) {
                                             foreach ($categories as $cat) {
                                             ?>
                                                 <div class="form-check">
-                                                    <input class="form-check-input position-static" name="category" type="radio" <?php if ($_ACTION == "edit" && $cat->getId() == $post->getCategoryId()) echo "checked"; ?> id="cat_<?php echo $cat->getId(); ?>" value="<?php echo $cat->getId(); ?>" aria-label="">
+                                                    <input class="form-check-input position-static" name="category" type="radio" <?php if ($_ACTION=="new" || ($_ACTION == "edit" && $cat->getId() == $post->getCategoryId())) echo "checked"; ?> id="cat_<?php echo $cat->getId(); ?>" value="<?php echo $cat->getId(); ?>" aria-label="">
                                                     <label class="form-check-label"><?php echo $cat->getName(); ?></label>
                                                 </div>
 

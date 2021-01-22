@@ -1,6 +1,6 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/meta_object.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/model/meta_object.php";
 
 /*
  *  Class:              Post

@@ -1,6 +1,6 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/category.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/model/category.php";
 
 $languages = Language::getAllLangueage($_CONN);
 

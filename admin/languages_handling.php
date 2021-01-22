@@ -1,6 +1,6 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/language.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/model/language.php";
 
 if (isset($_ACTION)) {
     switch ($_ACTION) {

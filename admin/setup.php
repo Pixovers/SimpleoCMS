@@ -1,11 +1,11 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/control_panel/login_utils.php";
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/db_utils.php";
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/str_utils.php";
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/lang_utils.php";
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/language.php";
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/model/category.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/utils/control_panel/login_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/utils/db_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/utils/str_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/utils/lang_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/model/language.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/model/category.php";
 
 
 if (isset($_GET['error'])) {

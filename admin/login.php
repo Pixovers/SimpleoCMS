@@ -1,6 +1,6 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/control_panel/login_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/utils/control_panel/login_utils.php";
 
 if (isset($_POST['error'])) {
 } else if (isset($_POST['submit'])) {

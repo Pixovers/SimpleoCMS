@@ -1,6 +1,6 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . "/../src/utils/db_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/utils/db_utils.php";
 
 class LangUtils {
     public static function getCurrentLanguage( $path,  $conn ) {

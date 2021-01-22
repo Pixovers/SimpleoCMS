@@ -18,7 +18,7 @@ class DBUtils {
                                 "password" => $password,
                                 "database" => $database );
         
-        $credentials_file = fopen( $_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json", "w" );
+        $credentials_file = fopen( $_SERVER['DOCUMENT_ROOT'] . "/config/db_credentials.json", "w" );
 
         if( $credentials_file !== false ) {
             fwrite( $credentials_file, json_encode( $credentials ) );
@@ -30,10 +30,10 @@ class DBUtils {
     }
 
     public static function readCredentials() {
-        $credentials_file = fopen( $_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json", "r" );
+        $credentials_file = fopen( $_SERVER['DOCUMENT_ROOT'] . "/config/db_credentials.json", "r" );
 
         if( $credentials_file !== false ) {
-            $data = fread( $credentials_file, filesize( $_SERVER['DOCUMENT_ROOT'] . "/../config/db_credentials.json" ) );
+            $data = fread( $credentials_file, filesize( $_SERVER['DOCUMENT_ROOT'] . "/config/db_credentials.json" ) );
             fclose( $credentials_file );
             return json_decode( $data, true );
         } else {
