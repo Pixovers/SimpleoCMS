@@ -89,6 +89,15 @@ class Language
     }
 
     public static function delete( $conn, $id ) {
+
+        $default_lang = self::getDefaultLanguage( $conn );
+        $selected_lang = self::byId( $conn, $id );
+
+        //could't delete default language
+        if( $selected_lang == $default_lang ) {
+            return false;
+        }
+
         $sql_text = <<<EOD
     SELECT
         TABLE_NAME,
