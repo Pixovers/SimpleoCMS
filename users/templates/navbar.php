@@ -5,21 +5,14 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <?php 
-    $currenturl = $_SERVER['PHP_SELF'];
 
-    
-    ?>
+    $currenturl = $_SERVER['PHP_SELF']; //create a variable containing the current URL?>
 
-  
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link 
-          
-          <?=(stripos($_SERVER['PHP_SELF'],'index') && empty($_GET['action'])) ? 'active' : '' ?>"
-       
-        
- href="index.php">Users</a>
+          <a class="nav-link <?=(stripos($_SERVER['PHP_SELF'],'index') && empty($_GET['action'])) ? 'active' : '' 
+          // we check if we are in the index, and if GET is empty. then we print 'active'?> "  href="index.php">Users</a>
         </li>
         <li class="nav-item">
           <a class="nav-link " href="index.php?action=insert"><i class="fas fa-user-plus"></i>New User</a>
