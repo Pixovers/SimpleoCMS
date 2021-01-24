@@ -1,10 +1,7 @@
 <?php
 include_once $_SERVER['DOCUMENT_ROOT'] . "/src/model/category.php";
 
-
-
-
-
+//check action ("new", "edit", or "delete")
 if (isset($_ACTION)) {
     switch ($_ACTION) {
         case "new":
@@ -65,6 +62,7 @@ if (isset($_ACTION)) {
             //-----
 
             if (isset($_POST['submit'])) {
+                
                 if( isset($_GET['ref']) ) {
                     $lang_ref = $_GET['ref'];
                 } else {

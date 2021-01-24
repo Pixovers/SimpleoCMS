@@ -86,11 +86,20 @@ if (isset($_ACTION)) {
                     $lang_ref = null;
                 }
 
+                if( isset($_POST['slug'] ) ) {
+                    $slug = $_POST['slug'];
+                } else {
+                    $slug = $_POST['title'];
+                }
+
+                //encode slug
+                $slug = strtolower(str_replace( $slug));
+                
                 
                 Post::addNew(
                     $_CONN,
                     $_POST['title'],
-                    "url",
+                    $slug,
                     $content,
                     $_POST['cat_id'],
                     1,
@@ -989,13 +998,14 @@ if (isset($_ACTION)) {
         }
 
         class Post {
-            constructor(title, content, cat_id, meta_title, meta_description, lang_ref) {
+            constructor(title, content, cat_id, meta_title, meta_description, lang_ref, slug) {
                 this.title = title;
                 this.content = content;
                 this.cat_id = cat_id;
                 this.meta_title = meta_title;
                 this.meta_description = meta_description;
                 this.lang_ref = lang_ref;
+                this.slug = slug;
             }
         }
 
@@ -1015,6 +1025,9 @@ if (isset($_ACTION)) {
         function createPost() {
             if (document.getElementById('post_name_input').value == "") {
                 document.getElementById('error_msg').innerHTML = "Please enter a valid Post Title.";
+                $('#modal_error').modal('show');
+            } else if( document.getElementById('SlugInput').value == "" ) {
+                document.getElementById('error_msg').innerHTML = "Please enter a valid Post Slug.";
                 $('#modal_error').modal('show');
             } else {
 
@@ -1038,10 +1051,8 @@ if (isset($_ACTION)) {
                     content = document.getElementById('editor').innerHTML;
                 }
 
-
                 var url = new URL(window.location.href);
                 
-            
                 //create post
                 var post = new Post(
                     document.getElementById('post_name_input').value,
@@ -1049,7 +1060,8 @@ if (isset($_ACTION)) {
                     cat_id,
                     document.getElementById('metaTitleInput').value,
                     document.getElementById('metaDescriptionInput').value,
-                    url.searchParams.get("ref")
+                    url.searchParams.get("ref"),
+                    document.getElementById('SlugInput').value
                 )
 
                 //submit
