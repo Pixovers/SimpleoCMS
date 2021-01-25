@@ -66,7 +66,7 @@ if (isset($_ACTION)) {
                     $content = $_POST['content'];
                 } else {
                     $content = "";
-                }
+                } 
 
                 if (isset($_POST['meta_title'])) {
                     $meta_title = $_POST['meta_title'];
@@ -93,8 +93,7 @@ if (isset($_ACTION)) {
                 }
 
                 //encode slug
-                $slug = strtolower(str_replace( $slug));
-                
+                $slug = strtolower(str_replace(" ", "-", $slug));
                 
                 Post::addNew(
                     $_CONN,
@@ -108,7 +107,6 @@ if (isset($_ACTION)) {
                     $meta_title,
                     $meta_description
                 );
-                
 
                 header("location: /admin/posts");
                 exit();
@@ -142,8 +140,17 @@ if (isset($_ACTION)) {
                             $meta_description = "";
                         }
 
+                        if( isset($_POST['slug'] ) ) {
+                            $slug = $_POST['slug'];
+                        } else {
+                            $slug = $_POST['title'];
+                        }
+
+                        //encode slug
+                        $slug = strtolower(str_replace(" ", "-", $slug));
+
                         $post->setName($_POST['title']);
-                        $post->setUrl("url");
+                        $post->setUrl($slug);
                         $post->setContent($content);
                         $post->setCategoryId($_POST['cat_id']);
                         $post->setMetaTitle($meta_title);
