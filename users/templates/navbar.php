@@ -11,11 +11,21 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link <?=(stripos($_SERVER['PHP_SELF'],'index') && empty($_GET['action'])) ? 'active' : '' 
+          <a class="nav-link <?php 
+          
+          
+          
+          $activeIndex = (stripos($_SERVER['PHP_SELF'],'index') && empty($_GET['action']));
+          $class = $activeIndex ?  'active' : '' ;
+
+          echo $class;
+          
+   
           // we check if we are in the index, and if GET is empty. then we print 'active'?> "  href="index.php">Users</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="index.php?action=insert"><i class="fas fa-user-plus"></i>New User</a>
+          <a class="nav-link <?php $activeIndex = (!empty($_GET['action'])&& $_GET['action']==='insert') ?>           $class = $activeIndex ?  'active' : '' ;
+ " href="index.php?action=insert"><i class="fas fa-user-plus"></i>New User</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
