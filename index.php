@@ -5,6 +5,10 @@ session_start();
 include_once $_SERVER['DOCUMENT_ROOT'] . "/src/utils/lang_utils.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/src/utils/utils.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/src/utils/db_utils.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/src/model/media.php";
+
+
+
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -18,6 +22,10 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/config/db_credentials.json")) {
     include_once $_SERVER['DOCUMENT_ROOT'] . "/admin/setup.php";
 } else {
     $_CONN = DBUtils::createConnection();
+
+    Media::addNew($_CONN,"dfjsdf","dkfsfl","dfsg","dfsdf");
+    echo "ciao";
+
     list($lang_id, $uri) = LangUtils::getCurrentLanguage($_URI['path'], DBUtils::createConnection());
     switch ($uri) {
         case "/":
@@ -107,7 +115,7 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'] . "/config/db_credentials.json")) {
             exit();
 
 
-            // case default --------------------------------------------
+           // case default --------------------------------------------
 
         default:
             include_once($_SERVER['DOCUMENT_ROOT'] . "/pages/error_404.php");

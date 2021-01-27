@@ -143,6 +143,14 @@ if (isset($_GET['error'])) {
       FOREIGN KEY (post_lang_ref) REFERENCES `post`(post_id)  )
     ENGINE = InnoDB;
 
+    CREATE TABLE IF NOT EXISTS `media` (
+        `media_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        `media_url_slug` TEXT NOT NULL, 
+        `media_title` TEXT,  
+        `media_description` TEXT,  
+        `media_alt_text`  TEXT ) 
+    ENGINE = InnoDB;
+
     CREATE TABLE IF NOT EXISTS `users` (
         `user_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
         `user_email` TEXT NOT NULL,
