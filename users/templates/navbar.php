@@ -12,35 +12,20 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link <?php 
-          
-          
-          
+      
           $activeIndex = (stripos($_SERVER['PHP_SELF'],'index') && empty($_GET['action']));
           $class = $activeIndex ?  'active' : '' ;
-
           echo $class;
-          
-   
-          // we check if we are in the index, and if GET is empty. then we print 'active'?> "  href="index.php">Users</a>
+          // check if we are in the index, and if GET is empty. then we print 'active'?> " href="index.php">Users</a>
         </li>
+
         <li class="nav-item">
-          <a class="nav-link <?php $activeIndex = (!empty($_GET['action'])&& $_GET['action']==='insert') ?>           $class = $activeIndex ?  'active' : '' ;
- " href="index.php?action=insert"><i class="fas fa-user-plus"></i>New User</a>
+          <a class="nav-link <?php $activeIndex = (!empty($_GET['action'])&& $_GET['action'] ==='insert');  
+          $class = $activeIndex ?  'active' : ''; echo $class; ?>" href="index.php?action=insert">
+          <i class="fas fa-user-plus"></i>New User </a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="index.php">Users</a></li>
-            <li><a class="dropdown-item" href="index.php?action=insertNew users"></a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
+     
+  
       </ul>
       <form class="d-flex">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
